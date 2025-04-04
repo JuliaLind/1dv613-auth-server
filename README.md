@@ -1,93 +1,157 @@
-# auth-server
+# Auth Server API
 
+## General info
 
+This document describes the available routes on the authentication server. All endpoints are versioned under `/api/v1/`.
 
-## Getting started
+### Headers Overview
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+| Header           | Description                                |
+|------------------|--------------------------------------------|
+| `X-API-Key`      | Used to validate client access             |
+| `Authorization`  |Format: `Bearer <token>` (JWT) |
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+All requests and responses use `application/json` unless stated otherwise.
 
-## Add your files
+### General status codes for all routes
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+| Code | Description                          |
+|------|--------------------------------------|
+| 401  | Missing or invalid API key |
+| 404  | Not found        |
+| 500  | Server error |
+
+---
+
+## POST /refresh
+
+**Description**: Refresh your access token using a valid refresh token.
+
+### Required Headers
+
+- `Authorization: Bearer <refresh-token>`
+- `X-API-Key: <your-api-key>`
+
+### Request Body
+
+```json
+{}
+```
+
+### Response
+
+```json
+{
+  "accessToken": "<new-access-token>",
+  "refreshToken": "<new-refresh-token>"
+}
+```
+
+### Status Codes
+
+| Code | Description                          |
+|------|--------------------------------------|
+| 201  | Tokens successfully refreshed        |
+| 401  | Missing or invalid refresh token |
+
+---
+
+## POST /register
+
+**Description**: Register a new user account. All fields are required.
+
+### Required Headers
+
+- `X-API-Key: <your-api-key>`
+
+### Request Body
+
+```json
+{
+  "email": "julia@example.com",
+  "nickname": "julia_l",
+  "birthDate": "1989-02-24",
+  "password": "myVerySecretPassword"
+}
+```
+
+### Response
+
+**Status**: `201 Created`
+
+**Headers**:
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.lnu.se/1dv613/student/jl225vf/projects/auth-server.git
-git branch -M main
-git push -uf origin main
+Location: /login
 ```
 
-## Integrate with your tools
+**Body**:
 
-- [ ] [Set up project integrations](https://gitlab.lnu.se/1dv613/student/jl225vf/projects/auth-server/-/settings/integrations)
+```json
+{
+  "message": "Registration successful. Please log in."
+}
+```
 
-## Collaborate with your team
+### Status Codes
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+| Code | Description                          |
+|------|--------------------------------------|
+| 201  | User registered successfully         |
+| 400  | Bad request |
+| 401  | Missing or invalid API key           |
+| 409  | The nickname or email is already registered |
 
-## Test and Deploy
+---
 
-Use the built-in continuous integration in GitLab.
+## POST /login
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**Description**: Log in. All fields are required.
 
-***
+### Required Headers
 
-# Editing this README
+- `X-API-Key: <your-api-key>`
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Request Body
 
-## Suggestions for a good README
+```json
+{
+  "email": "julia@example.com",
+  "password": "myVerySecretPassword"
+}
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### Response
 
-## Name
-Choose a self-explaining name for your project.
+**Status**: `201 Created`
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Body**:
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```json
+{
+  "accessToken": "<new-access-token>",
+  "refreshToken": "<new-refresh-token>"
+}
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Status Codes
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+| Code | Description                          |
+|------|--------------------------------------|
+| 201  | User logged in |
+| 400  | Bad request |
+| 401  | Missing or invalid API key           |
+| 409  | The nickname or email is already registered |
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+---
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Notes
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Tokens returned in responses are JWTs signed by the server with assymetric private key.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Access tokens include:
+  nickname
+  birthDate
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Token rotation and chaining is applied to refresh tokens. If a refresh token is re-used, any active referesh token in the same chain will be inactivated. Each new session has a separate refreshtoken-chain.
