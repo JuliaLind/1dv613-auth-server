@@ -14,7 +14,7 @@ process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN
 
 const expect = chai.expect
 
-describe('test tokenService', () => {
+describe('test tokenService.decodeRefreshToken', () => {
   const user = {
     username: 'julia'
   }
@@ -28,13 +28,13 @@ describe('test tokenService', () => {
 
   const refreshToken = 'refreshToken'
 
+  const tokenService = new TokenService()
+
   afterEach(async () => {
     sinon.restore()
   })
 
   it('Decode ok, not expired', async function () {
-    const tokenService = new TokenService()
-
     sinon.stub(JwtService, 'decodePayload').resolves(payload)
     sinon.stub(JwtService, 'decodeWithoutVerify')
     sinon.stub(RefreshTokenModel, 'expire')
@@ -48,8 +48,6 @@ describe('test tokenService', () => {
   })
 
   it('Decode not ok, jwt expired (token expiration date)', async function () {
-    const tokenService = new TokenService()
-
     const error = new Error('jwt expire')
     error.name = 'TokenExpiredError'
 
@@ -66,7 +64,6 @@ describe('test tokenService', () => {
   })
 
   it('Decode not ok, jwt missing or malformed', async function () {
-    const tokenService = new TokenService()
     const error = new Error()
 
     sinon.stub(JwtService, 'decodePayload').throws(error)
