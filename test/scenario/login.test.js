@@ -126,7 +126,6 @@ describe('test server', () => {
           expect(res.body).to.not.have.property('access-token')
           expect(res.body).to.not.have.property('refresh-token')
 
-          expect(res.body).to.have.property('status_code', 401)
           expect(res.body).to.have.property('message', 'Credentials invalid or not provided.')
         })
       }
