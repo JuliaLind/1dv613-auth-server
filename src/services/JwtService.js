@@ -39,4 +39,25 @@ export class JwtService {
       )
     })
   }
+
+  
+  /**
+   * Decodes a JWT and returns the payload.
+   *
+   * @param {string} token - The JWT to decode.
+   * @param {string} key - The secret key used for verifying the JWT.
+   * @returns {Promise<object>} A Promise that resolves to the payload extracted from the JWT payload.
+   */
+  static async decode (token, key) {
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, key, (error, decoded) => {
+        if (error) {
+          reject(error)
+          return
+        }
+
+        resolve(decoded)
+      })
+    })
+  }
 }
