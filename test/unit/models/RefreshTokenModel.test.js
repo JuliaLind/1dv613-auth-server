@@ -133,7 +133,6 @@ describe('RefreshTokenModel', () => {
     expect(doc.save).to.have.been.calledOnce
   })
 
-
   it('expire ok', async () => {
     const doc = new RefreshTokenModel({
       next: null,
@@ -141,7 +140,6 @@ describe('RefreshTokenModel', () => {
     })
 
     sinon.stub(doc, 'save').resolves()
-
 
     const res = await doc.expire()
 
