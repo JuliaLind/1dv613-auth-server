@@ -4,6 +4,7 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
+import mongoose from 'mongoose'
 
 import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 
@@ -113,5 +114,39 @@ describe('RefreshTokenModel', () => {
     expect(token1.expire).to.have.been.calledOnce
     expect(token2.expire).to.have.been.calledOnce
     expect(token3.expire).to.have.been.calledOnce
+  })
+
+  it('chain ok', async () => {
+    const doc = new RefreshTokenModel({
+      next: null,
+      expired: false
+    })
+
+    sinon.stub(doc, 'save').resolves()
+
+    const newTokenId = new mongoose.Types.ObjectId()
+
+    await doc.chain(newTokenId)
+
+    expect(doc.next).to.equal(newTokenId)
+    expect(doc.expired).to.be.true
+    expect(doc.save).to.have.been.calledOnce
+  })
+
+
+  it('expire ok', async () => {
+    const doc = new RefreshTokenModel({
+      next: null,
+      expired: false
+    })
+
+    sinon.stub(doc, 'save').resolves()
+
+
+    const res = await doc.expire()
+
+    expect(res).to.be.null
+    expect(doc.expired).to.be.true
+    expect(doc.save).to.have.been.calledOnce
   })
 })
