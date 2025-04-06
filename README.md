@@ -1,5 +1,7 @@
 # Auth Server API
 
+![Class diagram](.readme/class_diagram.drawio.png)
+
 ## General info
 
 This document describes the available routes on the authentication server. All endpoints are versioned under `/api/v1/`.

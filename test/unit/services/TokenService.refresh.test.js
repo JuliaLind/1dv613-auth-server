@@ -3,7 +3,6 @@
 
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-import fs from 'fs/promises'
 
 import { TokenService } from '../../src/services/TokenService.js'
 import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
@@ -12,8 +11,6 @@ import createError from 'http-errors'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
-
-process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
 describe('TokenService.refresh', () => {
   afterEach(() => {
@@ -31,9 +28,9 @@ describe('TokenService.refresh', () => {
 
   it('Not Ok, refreshToken reuse', async function () {
     const tokenService = new TokenService()
+    tokenService.decodeRefreshToken = sinon.stub().resolves(payload)
+    tokenService.createNewTokenPair = sinon.stub()
 
-    sinon.stub(tokenService, 'decodeRefreshToken').resolves(payload)
-    sinon.stub(tokenService, 'createNewTokenPair')
     const errMsg = 'Token re-use is not allowed'
 
     const error = createError(401, errMsg)
@@ -53,17 +50,21 @@ describe('TokenService.refresh', () => {
 
   it('Ok', async function () {
     const tokenService = new TokenService()
-    sinon.stub(tokenService, 'decodeRefreshToken').resolves(payload)
+    tokenService.decodeRefreshToken = sinon.stub().resolves(payload)
+
     const oldTokenDoc = {
       chain: sinon.stub().resolves()
     }
     sinon.stub(RefreshTokenModel, 'authenticate').resolves(oldTokenDoc)
     const accessToken = 'accessToken'
 
-    sinon.stub(tokenService, 'createNewTokenPair').resolves([{
-      accessToken,
-      refreshToken
-    }, payload.jti])
+    tokenService.createNewTokenPair = sinon.stub().resolves({
+      tokenPair: {
+        accessToken,
+        refreshToken
+      },
+      jti: payload.jti
+    })
 
     const result = await tokenService.refresh(refreshToken)
 

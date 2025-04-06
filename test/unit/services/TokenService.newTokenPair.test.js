@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
-import fs from 'fs/promises'
 import sinon from 'sinon'
 
 import { TokenService } from '../../src/services/TokenService.js'
@@ -10,8 +9,6 @@ import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
 import { JwtService } from '../../src/lib/JwtService.js'
 
 const expect = chai.expect
-
-process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
 describe('TokenService.createNewTokenPair', () => {
   const user = {
@@ -39,7 +36,7 @@ describe('TokenService.createNewTokenPair', () => {
       jti
     }
 
-    sinon.stub(RefreshTokenModel, 'generate').resolves(jti)
+    sinon.stub(RefreshTokenModel, 'newJti').resolves(jti)
 
     sinon.stub(JwtService, 'encodePayload').callsFake((payload) => {
       if (JSON.stringify(payload) === JSON.stringify(payloadAccessToken)) {

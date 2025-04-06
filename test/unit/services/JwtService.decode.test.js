@@ -8,7 +8,7 @@ import { JwtService } from '../../src/lib/JwtService.js'
 
 const expect = chai.expect
 
-describe('JwtService.decodePayload', () => {
+describe('JwtService.decode', () => {
   afterEach(() => {
     sinon.restore()
   })
@@ -22,7 +22,7 @@ describe('JwtService.decodePayload', () => {
       callbackFn(null, decoded)
     })
 
-    const result = await JwtService.decodePayload('validtoken', 'secret')
+    const result = await JwtService.decode('validtoken', 'secret')
     expect(result).to.deep.equal(decoded)
   })
 
@@ -32,6 +32,6 @@ describe('JwtService.decodePayload', () => {
       callbackFn(error, null)
     })
 
-    await expect(JwtService.decodePayload('invalidtoken', 'secret')).to.be.rejectedWith('Verify error')
+    await expect(JwtService.decode('invalidtoken', 'secret')).to.be.rejectedWith('Verify error')
   })
 })

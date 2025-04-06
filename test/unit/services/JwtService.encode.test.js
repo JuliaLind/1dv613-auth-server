@@ -8,7 +8,7 @@ import { JwtService } from '../../src/lib/JwtService.js'
 
 const expect = chai.expect
 
-describe('JwtService.encodePayload', () => {
+describe('JwtService.encode', () => {
   afterEach(() => {
     sinon.restore()
   })
@@ -25,7 +25,7 @@ describe('JwtService.encodePayload', () => {
       callback(null, token)
     })
 
-    const result = await JwtService.encodePayload(payload, secret, expiresIn)
+    const result = await JwtService.encode(payload, secret, expiresIn)
 
     expect(result).to.equal(token)
     expect(jwtSign).to.have.been.calledOnce
@@ -37,6 +37,6 @@ describe('JwtService.encodePayload', () => {
       callback(error, null)
     })
 
-    await expect(JwtService.encodePayload({}, 'secret', '1h')).to.be.rejectedWith('Sign error')
+    await expect(JwtService.encode({}, 'secret', '1h')).to.be.rejectedWith('Sign error')
   })
 })
