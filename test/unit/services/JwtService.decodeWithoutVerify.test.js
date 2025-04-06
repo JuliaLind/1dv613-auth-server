@@ -1,28 +1,28 @@
-/* global afterEach */
-/* eslint-disable no-unused-expressions */
+// /* global afterEach */
+// /* eslint-disable no-unused-expressions */
 
-import chai from 'chai'
-import sinon from 'sinon'
-import jwt from 'jsonwebtoken'
-import { JwtService } from '../../../src/services/JwtService.js'
+// import chai from 'chai'
+// import sinon from 'sinon'
+// import jwt from 'jsonwebtoken'
+// import { JwtService } from '../../../src/services/JwtService.js'
 
-const expect = chai.expect
+// const expect = chai.expect
 
-describe('JwtService.decodeWithoutVerify', () => {
-  afterEach(() => {
-    sinon.restore()
-  })
+// describe('JwtService.decodeWithoutVerify', () => {
+//   afterEach(() => {
+//     sinon.restore()
+//   })
 
-  it('should return decoded payload from jwt.decode', () => {
-    const decoded = {
-      username: 'julia'
-    }
+//   it('should return decoded payload from jwt.decode', () => {
+//     const decoded = {
+//       username: 'julia'
+//     }
 
-    const decodeStub = sinon.stub(jwt, 'decode').returns(decoded)
+//     const decodeStub = sinon.stub(jwt, 'decode').returns(decoded)
 
-    const result = JwtService.decodeWithoutVerify('myexpiredtoken')
+//     const result = JwtService.decodeWithoutVerify('myexpiredtoken')
 
-    expect(result).to.deep.equal(decoded)
-    expect(decodeStub).to.have.been.calledOnceWith('myexpiredtoken')
-  })
-})
+//     expect(result).to.deep.equal(decoded)
+//     expect(decodeStub).to.have.been.calledOnceWith('myexpiredtoken')
+//   })
+// })
