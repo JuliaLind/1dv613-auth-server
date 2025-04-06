@@ -6,12 +6,10 @@ import sinon from 'sinon'
 import bcrypt from 'bcrypt'
 import chaiAsPromised from 'chai-as-promised'
 
-
 import { UserModel } from '../../../src/models/UserModel.js'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
-
 
 describe('UserModel', () => {
   const user = {
@@ -67,20 +65,20 @@ describe('UserModel', () => {
     sinon.stub(UserModel, 'findOne').resolves(null)
 
     await expect(UserModel.authenticate(user.username, user.password)).to.be.rejected
-    .then(err => {
-      expect(err).to.have.property('message', 'Credentials invalid or not provided.')
-      expect(err).to.have.property('statusCode', 401)
-    })
+      .then(err => {
+        expect(err).to.have.property('message', 'Credentials invalid or not provided.')
+        expect(err).to.have.property('statusCode', 401)
+      })
   })
 
   it('authenticate Not Ok, wrong password', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
     await expect(UserModel.authenticate(user.username, 'wrong password')).to.be.rejected
-    .then(err => {
-      expect(err).to.have.property('message', 'Credentials invalid or not provided.')
-      expect(err).to.have.property('statusCode', 401)
-    })
+      .then(err => {
+        expect(err).to.have.property('message', 'Credentials invalid or not provided.')
+        expect(err).to.have.property('statusCode', 401)
+      })
   })
 
   describe('Create new account, not ok', () => {
@@ -138,13 +136,13 @@ describe('UserModel', () => {
       })
 
       expect(user.validate()).to.be.rejected
-      .then(err => {
-        expect(err).to.have.property('errors')
-        expect(err.errors).to.have.property('username')
-        expect(err.errors.username.message).to.equal(
-          'Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'
-        )
-      })
+        .then(err => {
+          expect(err).to.have.property('errors')
+          expect(err.errors).to.have.property('username')
+          expect(err.errors.username.message).to.equal(
+            'Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'
+          )
+        })
     })
 
     it('Username contains invalid character', async () => {

@@ -65,6 +65,12 @@ const schema = new mongoose.Schema(
       type: Date,
       required: [true, 'Birth date is required.'],
       validate: {
+        /**
+         * Ensures the user is at least 18 years old.
+         *
+         * @param {string | object} value - the birth date of the user
+         * @returns {boolean} - true if the user is at least 18 years old, false otherwise
+         */
         validator: function (value) {
           const age = differenceInYears(new Date(), value)
           return age >= 18
