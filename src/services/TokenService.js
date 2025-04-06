@@ -5,7 +5,7 @@
  * @author Julia Lind
  * @version 1.0.0
  */
-
+import createError from 'http-errors'
 import { RefreshTokenModel } from '../models/RefreshTokenModel.js'
 import { JwtService } from './JwtService.js'
 
@@ -59,6 +59,29 @@ export class TokenService {
         refreshToken
       },
       jti
+    }
+  }
+
+  /**
+   * Verifies and decodes the refresh token.
+   * If the token is valid its payload is returned.
+   *
+   * @throws 401 error if the token is invalid
+   * If it's invalid because expired, the token also gets expired in the database.
+   * @param {object} oldRefreshToken - the jwt refresh token
+   * @returns {object} - the payload of the jwt token
+   */
+  async decodeRefreshToken (oldRefreshToken) {
+    let payload
+    try {
+      payload = await JwtService.decode(oldRefreshToken, process.env.REFRESH_TOKEN_KEY)
+      return payload
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        payload = await JwtService.decodeWithoutVerify(oldRefreshToken)
+        await RefreshTokenModel.expireById(payload.jti)
+      }
+      throw createError(401, error.message)
     }
   }
 }
