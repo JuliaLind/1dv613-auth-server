@@ -9,6 +9,7 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import createError from 'http-errors'
 import validator from 'validator'
+import { differenceInYears } from 'date-fns'
 
 // Restrictions
 
@@ -59,6 +60,17 @@ const schema = new mongoose.Schema(
       trim: true,
       unique: true,
       validate: [validator.isEmail, 'Email must be a valid email address.']
+    },
+    birthDate: {
+      type: Date,
+      required: [true, 'Birth date is required.'],
+      validate: {
+        validator: function (value) {
+          const age = differenceInYears(new Date(), value)
+          return age >= 18
+        },
+        message: 'You must be at least 18 years old.'
+      }
     }
   },
   {

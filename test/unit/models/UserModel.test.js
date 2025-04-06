@@ -48,25 +48,39 @@ describe('UserModel', () => {
   it('authenticate Not Ok, missing username', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
-    await expect(UserModel.authenticate(undefined, user.password)).to.be.rejectedWith('Credentials invalid or not provided.').having.property('statusCode', 401)
+    expect(UserModel.authenticate(undefined, user.password)).to.be.rejected.then(err => {
+      expect(err).to.have.property('message', 'Credentials invalid or not provided.')
+      expect(err).to.have.property('statusCode', 401)
+    })
   })
 
   it('authenticate Not Ok, missing password', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
-    await expect(UserModel.authenticate(user.username, undefined)).to.be.rejectedWith('Credentials invalid or not provided.').having.property('statusCode', 401)
+    expect(UserModel.authenticate(user.username, undefined)).to.be.rejected.then(err => {
+      expect(err).to.have.property('message', 'Credentials invalid or not provided.')
+      expect(err).to.have.property('statusCode', 401)
+    })
   })
 
   it('authenticate Not Ok, user not found', async () => {
     sinon.stub(UserModel, 'findOne').resolves(null)
 
-    await expect(UserModel.authenticate(user.username, user.password)).to.be.rejectedWith('Credentials invalid or not provided.').having.property('statusCode', 401)
+    await expect(UserModel.authenticate(user.username, user.password)).to.be.rejected
+    .then(err => {
+      expect(err).to.have.property('message', 'Credentials invalid or not provided.')
+      expect(err).to.have.property('statusCode', 401)
+    })
   })
 
   it('authenticate Not Ok, wrong password', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
-    await expect(UserModel.authenticate(user.username, user.password)).to.be.rejectedWith('Credentials invalid or not provided.').having.property('statusCode', 401)
+    await expect(UserModel.authenticate(user.username, 'wrong password')).to.be.rejected
+    .then(err => {
+      expect(err).to.have.property('message', 'Credentials invalid or not provided.')
+      expect(err).to.have.property('statusCode', 401)
+    })
   })
 
   describe('Create new account, not ok', () => {
@@ -77,7 +91,8 @@ describe('UserModel', () => {
       const user = new UserModel({
         username: 'Julia',
         email: 'julia@myemail.com',
-        birthDate
+        birthDate,
+        password: 'mypassword'
       })
 
       await expect(user.validate()).to.be.rejectedWith('You must be at least 18 years old.')
@@ -90,7 +105,8 @@ describe('UserModel', () => {
       const user = new UserModel({
         username: 'Julia',
         email: 'julia@mye@mail.com',
-        birthDate
+        birthDate,
+        password: 'mypassword'
       })
 
       await expect(user.validate()).to.be.rejectedWith('Email must be a valid email address.')
@@ -103,7 +119,8 @@ describe('UserModel', () => {
       const user = new UserModel({
         username: 'aa',
         email: 'julia@myemail.com',
-        birthDate
+        birthDate,
+        password: 'mypassword'
       })
 
       await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
@@ -116,10 +133,18 @@ describe('UserModel', () => {
       const user = new UserModel({
         username: '_julia',
         email: 'julia@myemail.com',
-        birthDate
+        birthDate,
+        password: 'mypassword'
       })
 
-      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
+      expect(user.validate()).to.be.rejected
+      .then(err => {
+        expect(err).to.have.property('errors')
+        expect(err.errors).to.have.property('username')
+        expect(err.errors.username.message).to.equal(
+          'Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'
+        )
+      })
     })
 
     it('Username contains invalid character', async () => {
@@ -129,7 +154,8 @@ describe('UserModel', () => {
       const user = new UserModel({
         username: 'ju.lia',
         email: 'julia@myemail.com',
-        birthDate
+        birthDate,
+        password: 'mypassword'
       })
 
       await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
