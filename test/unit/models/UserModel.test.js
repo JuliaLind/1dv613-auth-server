@@ -4,10 +4,14 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import bcrypt from 'bcrypt'
+import chaiAsPromised from 'chai-as-promised'
+
 
 import { UserModel } from '../../../src/models/UserModel.js'
 
+chai.use(chaiAsPromised)
 const expect = chai.expect
+
 
 describe('UserModel', () => {
   const user = {
@@ -22,9 +26,9 @@ describe('UserModel', () => {
   beforeEach(() => {
     sinon.stub(bcrypt, 'compare').callsFake((password, hash) => {
       if (password === user.password) {
-        return false
+        return true
       }
-      return true
+      return false
     })
 
     user.toObject = sinon.stub().returns({
@@ -49,12 +53,6 @@ describe('UserModel', () => {
 
   it('authenticate Not Ok, missing password', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
-    sinon.stub(bcrypt, 'compare').callsFake((password, hash) => {
-      if (password === user.password) {
-        return true
-      }
-      return false
-    })
 
     await expect(UserModel.authenticate(user.username, undefined)).to.be.rejectedWith('Credentials invalid or not provided.').having.property('statusCode', 401)
   })
@@ -108,7 +106,33 @@ describe('UserModel', () => {
         birthDate
       })
 
-      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-30 characters')
+      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
+    })
+
+    it('Username does not start with a letter', async () => {
+      const birthDate = new Date()
+      birthDate.setFullYear(birthDate.getFullYear() - 18)
+
+      const user = new UserModel({
+        username: '_julia',
+        email: 'julia@myemail.com',
+        birthDate
+      })
+
+      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
+    })
+
+    it('Username contains invalid character', async () => {
+      const birthDate = new Date()
+      birthDate.setFullYear(birthDate.getFullYear() - 18)
+
+      const user = new UserModel({
+        username: 'ju.lia',
+        email: 'julia@myemail.com',
+        birthDate
+      })
+
+      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
     })
   })
 })
