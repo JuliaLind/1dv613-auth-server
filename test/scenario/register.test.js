@@ -15,11 +15,10 @@ chai.use(chaiHttp)
 
 describe('test server', () => {
   const credentials = {
-    username: 'en945zz',
+    username: 'julia_initial',
     password: '5up3rs3cr3tp@55w0rd',
-    firstName: 'Julia',
-    lastName: 'L',
-    email: 'julia@student.lnu.se'
+    email: 'julia_initial@student.lnu.se',
+    birthDate: '1989-02-24'
   }
 
   const user = {

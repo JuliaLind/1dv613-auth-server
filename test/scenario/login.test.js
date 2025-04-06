@@ -48,15 +48,15 @@ describe('test server', () => {
           .send(credentials)
 
         expect(res).to.have.status(201)
-        expect(res.body).to.have.property('access-token')
-        expect(res.body).to.have.property('refresh-token')
+        expect(res.body).to.have.property('accessToken')
+        expect(res.body).to.have.property('refreshToken')
 
-        const accessPayload = await JwtService.decodePayload(res.body['access-token'], process.env.ACCESS_TOKEN_PUBLIC_KEY)
+        const accessPayload = await JwtService.decodePayload(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
         expect(accessPayload.user.username).to.equal(user.username)
         expect(accessPayload.user.email).to.equal(user.email)
         expect(accessPayload.user).to.not.have.property('password')
 
-        const refreshPayload = await JwtService.decodePayload(res.body['refresh-token'], process.env.REFRESH_TOKEN_KEY)
+        const refreshPayload = await JwtService.decodePayload(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
         expect(refreshPayload.user.username).to.equal(user.username)
         expect(refreshPayload.user.email).to.equal(user.email)
         expect(refreshPayload.user).to.not.have.property('password')
@@ -76,8 +76,8 @@ describe('test server', () => {
           .post('/api/v1/login')
           .send(credentials)
 
-        const refreshPayload = await JwtService.decodePayload(res.body['refresh-token'], process.env.REFRESH_TOKEN_KEY)
-        const refreshPayload2 = await JwtService.decodePayload(res2.body['refresh-token'], process.env.REFRESH_TOKEN_KEY)
+        const refreshPayload = await JwtService.decodePayload(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
+        const refreshPayload2 = await JwtService.decodePayload(res2.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
 
         const refreshToken = await RefreshTokenModel.findById(refreshPayload.jti)
         expect(refreshToken).to.have.property('next', null)
@@ -123,8 +123,8 @@ describe('test server', () => {
             .send(credentials)
 
           expect(res).to.have.status(401)
-          expect(res.body).to.not.have.property('access-token')
-          expect(res.body).to.not.have.property('refresh-token')
+          expect(res.body).to.not.have.property('accessToken')
+          expect(res.body).to.not.have.property('refreshToken')
 
           expect(res.body).to.have.property('message', 'Credentials invalid or not provided.')
         })
