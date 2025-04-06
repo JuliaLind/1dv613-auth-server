@@ -84,4 +84,22 @@ export class TokenService {
       throw createError(401, error.message)
     }
   }
+
+  /**
+   * Validates and expires old refresh token, and then generates a new access token and a new refresh token.
+   *
+   * @param {object} oldRefreshToken - the jwt refresh token
+   * @returns {object} - an associative array containing a new JWT access token and new JWT refresh token
+   */
+  async refresh (oldRefreshToken) {
+    const payload = await this.decodeRefreshToken(oldRefreshToken)
+
+    const oldTokenDoc = await RefreshTokenModel.authenticate(payload.jti)
+
+    const result = await this.newTokenPair(payload.user)
+
+    await oldTokenDoc.chain(result.jti)
+
+    return result.tokens
+  }
 }
