@@ -4,7 +4,7 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import { TokenService } from '../../../src/services/TokenService.js'
-import { UserModel } from '../../../src/services/UserModel.js'
+import { UserModel } from '../../../src/models/UserModel.js'
 import { UserController } from '../../../src/controllers/UserController.js'
 
 const expect = chai.expect
