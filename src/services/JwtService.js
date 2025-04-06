@@ -40,7 +40,6 @@ export class JwtService {
     })
   }
 
-  
   /**
    * Decodes a JWT and returns the payload.
    *
@@ -59,5 +58,17 @@ export class JwtService {
         resolve(decoded)
       })
     })
+  }
+
+  /**
+   * Decodes a token without verifying it.
+   * Used to get the jti from the refresh token after it has expired, to
+   * mark as expired in the database and to check for reuse.
+   *
+   * @param {string} token - The JWT to decode.
+   * @returns {object} The payload extracted from the JWT payload.
+   */
+  static async decodeWithoutVerify (token) {
+    return jwt.decode(token)
   }
 }
