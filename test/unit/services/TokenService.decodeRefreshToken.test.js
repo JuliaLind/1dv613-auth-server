@@ -4,9 +4,9 @@
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 
-import { TokenService } from '../../src/services/TokenService.js'
-import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
-import { JwtService } from '../../src/lib/JwtService.js'
+import { TokenService } from '../../../src/services/TokenService.js'
+import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
+import { JwtService } from '../../../src/services/JwtService.js'
 import sinon from 'sinon'
 
 chai.use(chaiAsPromised)

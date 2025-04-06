@@ -4,7 +4,7 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import jwt from 'jsonwebtoken'
-import { JwtService } from '../../src/lib/JwtService.js'
+import { JwtService } from '../../../src/services/JwtService.js'
 
 const expect = chai.expect
 

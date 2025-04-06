@@ -4,8 +4,9 @@
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 
-import { TokenService } from '../../src/services/TokenService.js'
-import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
+import { TokenService } from '../../../src/services/TokenService.js'
+import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
+
 import sinon from 'sinon'
 import createError from 'http-errors'
 

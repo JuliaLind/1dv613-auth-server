@@ -4,13 +4,13 @@
 import chai from 'chai'
 import sinon from 'sinon'
 
-import { TokenService } from '../../src/services/TokenService.js'
-import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
-import { JwtService } from '../../src/lib/JwtService.js'
+import { TokenService } from '../../../src/services/TokenService.js'
+import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
+import { JwtService } from '../../../src/services/JwtService.js'
 
 const expect = chai.expect
 
-describe('TokenService.createNewTokenPair', () => {
+describe('TokenService.newTokenPair', () => {
   const user = {
     username: 'julia'
   }
