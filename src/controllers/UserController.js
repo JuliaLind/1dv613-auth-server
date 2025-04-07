@@ -9,8 +9,6 @@ import createError from 'http-errors'
 import { UserModel } from '../models/UserModel.js'
 import { TokenService } from '../services/TokenService.js'
 
-const tokenService = new TokenService()
-
 /**
  * Encapsulates a controller.
  */
@@ -89,7 +87,7 @@ export class UserController {
       return authorization[1]
     }
 
-    throw createError(401, 'Invalid refresh token.')
+    throw createError(401, 'Invalid authorization header format.')
   }
 
   /**
@@ -99,7 +97,9 @@ export class UserController {
    * @returns {boolean} - True if the header is valid, otherwise false.
    */
   #validateHeader (authorization) {
-    return authorization.length > 1 && authorization[0].toLowerCase() === 'bearer'
+    return Array.isArray(authorization) &&
+    typeof authorization?.[0] === 'string' &&
+    authorization[0].toLowerCase() === 'bearer'
   }
 
   /**

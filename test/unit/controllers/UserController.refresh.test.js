@@ -56,81 +56,78 @@ describe('UserController.refresh', () => {
     })
   }
 
-  // const invalidHeaders = [
-  //   {},
-  //   {
-  //     authorization: undefined
-  //   },
-  //   {
-  //     authorization: null
-  //   },
-  //   {
-  //     authorization: 'Bearer '
-  //   },
-  //   {
-  //     authorization: ''
-  //   },
-  //   {
-  //     'X-jwt-token': 'Bearer ' + refreshToken
-  //   },
-  //   {
-  //     authorization: 'notbearer ' + refreshToken
-  //   }
-  // ]
+  const invalidHeaders = [
+    {},
+    {
+      authorization: undefined
+    },
+    {
+      authorization: null
+    },
+    {
+      authorization: 'Bearer '
+    },
+    {
+      authorization: ''
+    },
+    {
+      'X-jwt-token': 'Bearer ' + refreshToken
+    },
+    {
+      authorization: 'notbearer ' + refreshToken
+    }
+  ]
 
-  // for (const header of invalidHeaders) {
-  //   it('not ok, wrong header format', async () => {
-  //     const tokenService = new TokenService()
-  //     tokenService.refresh = sinon.stub().resolves()
+  for (const header of invalidHeaders) {
+    it('not ok, wrong header format', async () => {
+      const tokenService = new TokenService()
 
-  //     const req = {
-  //       headers: header
-  //     }
-  //     const res = {
-  //       status: sinon.stub().returnsThis(),
-  //       json: sinon.stub()
-  //     }
-  //     const next = sinon.stub()
+      const req = {
+        headers: header
+      }
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub()
+      }
+      const next = sinon.stub()
 
-  //     const userController = new UserController(tokenService)
-  //     await userController.refresh(req, res, next)
-  //     expect(res.status).not.to.have.been.called
-  //     expect(res.json).not.to.have.been.called
-  //     expect(next).to.have.been.calledWithMatch(
-  //       sinon.match
-  //         .instanceOf(Error)
-  //         .and(sinon.match.has('statusCode', 401))
-  //         .and(sinon.match.has('message', 'Invalid token format.'))
-  //     )
-      
-  //   })
-  // }
+      const userController = new UserController(tokenService)
+      await userController.refresh(req, res, next)
 
-  // it('not ok, refresh token expired', async () => {
-  //   const tokenService = new TokenService()
-  //   const error = createError(401, 'Token is invalid or expired.')
-  //   tokenService.refresh = sinon.stub().rejects(error)
+      expect(res.status).not.to.have.been.called
+      expect(res.json).not.to.have.been.called
+      expect(next).to.have.been.calledWithMatch(
+        sinon.match
+          .instanceOf(Error)
+          .and(sinon.match.has('statusCode', 401))
+      )
+    })
+  }
 
-  //   const req = {
-  //     headers: {
-  //       authorization: 'Bearer ' + refreshToken
-  //     }
-  //   }
-  //   const res = {
-  //     status: sinon.stub().returnsThis(),
-  //     json: sinon.stub()
-  //   }
-  //   const next = sinon.stub()
-  //   const userController = new UserController(tokenService)
-  //   await userController.refresh(req, res, next)
-  //   expect(res.status).not.to.have.been.called
-  //   expect(res.json).not.to.have.been.called
-  //   expect(next).to.have.been.calledWithMatch(
-  //     sinon.match
-  //       .instanceOf(Error)
-  //       .and(sinon.match.has('statusCode', 401))
-  //       .and(sinon.match.has('message', 'Token is invalid or expired.'))
-  //   )
-    
-  // })
+  it('not ok, refresh token expired', async () => {
+    const tokenService = new TokenService()
+    const error = createError(401, 'Token is invalid or expired.')
+    tokenService.refresh = sinon.stub().rejects(error)
+
+    const req = {
+      headers: {
+        authorization: 'Bearer ' + refreshToken
+      }
+    }
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    }
+    const next = sinon.stub()
+    const userController = new UserController(tokenService)
+    await userController.refresh(req, res, next)
+    expect(res.status).not.to.have.been.called
+    expect(res.json).not.to.have.been.called
+    expect(next).to.have.been.calledWithMatch(
+      sinon.match
+        .instanceOf(Error)
+        .and(sinon.match.has('statusCode', 401))
+        .and(sinon.match.has('message', 'Token is invalid or expired.'))
+    )
+  })
 })
