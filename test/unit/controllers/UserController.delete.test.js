@@ -51,7 +51,7 @@ describe('UserController.delete', () => {
     expect(tokenService.expire).to.have.been.calledWith('123')
   })
 
-  it('Not ok, not the same username as in token', async () => {
+  it('Not ok, validation failed', async () => {
     const req = {
       headers: {
         authorization: 'Bearer ' + refreshToken
@@ -86,4 +86,42 @@ describe('UserController.delete', () => {
     expect(UserModel.delete).to.not.have.been.called
     expect(tokenService.expire).to.not.have.been.called
   })
+
+  it('Not Ok, authentication failed', async () => {
+    const req = {
+      headers: {
+        authorization: 'Bearer ' + refreshToken
+      },
+      body: {
+        username: 'julia',
+        password: 'mypassword'
+      }
+    }
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+      end: sinon.stub()
+    }
+    const next = sinon.stub()
+
+    const tokenService = new TokenService()
+    tokenService.validate = sinon.stub().resolves('123')
+    sinon.stub(UserModel, 'delete').throws(createError(401, 'Credentials invalid or not provided.'))
+    tokenService.expire = sinon.stub().resolves()
+
+    const userController = new UserController(tokenService)
+
+    await userController.delete(req, res, next)
+
+    expect(next).to.have.been.calledWith(sinon.match({
+      statusCode: 401,
+      message: 'Credentials invalid or not provided.'
+    }))
+    expect(res.status).to.not.have.been.called
+    expect(res.json).to.not.have.been.called
+    expect(tokenService.validate).to.have.been.calledWith(refreshToken, req.body.username)
+    expect(UserModel.delete).to.have.been.calledWith(req.body.username, req.body.password)
+    expect(tokenService.expire).to.not.have.been.called
+  })
+
 })
