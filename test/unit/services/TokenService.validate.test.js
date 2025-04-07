@@ -4,10 +4,8 @@ import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 
 import { TokenService } from '../../../src/services/TokenService.js'
-import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 
 import sinon from 'sinon'
-import createError from 'http-errors'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
@@ -19,12 +17,12 @@ describe('TokenService.expire', () => {
 
   it('OK', async function () {
     const user = {
-      username: 'julia',
+      username: 'julia'
     }
     const jti = '456'
     const payload = {
       user,
-      jti,
+      jti
     }
 
     const tokenService = new TokenService()
@@ -33,22 +31,21 @@ describe('TokenService.expire', () => {
     expect(res).to.equal(jti)
   })
 
-  it ('Not OK, username is not right', async function () {
+  it('Not OK, username is not right', async function () {
     const user = {
-      username: 'julia',
+      username: 'julia'
     }
     const jti = '456'
     const payload = {
       user,
-      jti,
+      jti
     }
 
     const tokenService = new TokenService()
     tokenService.decodeRefreshToken = sinon.stub().resolves(payload)
 
-
     await expect(tokenService.validate('token', 'wrongname')).to.be.rejectedWith(sinon.match({
-      statusCode: 401,
+      statusCode: 401
     }))
   })
 })

@@ -7,7 +7,6 @@ import { TokenService } from '../../../src/services/TokenService.js'
 import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 
 import sinon from 'sinon'
-import createError from 'http-errors'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
