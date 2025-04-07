@@ -44,8 +44,7 @@ const schema = new mongoose.Schema(
       required: [true, 'Username is required.'],
       unique: true,
       trim: true,
-      match: [/^[A-z][A-z0-9_-]{2,255}$/, 'Username must contain at least 3 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'],
-      maxlength: [30, 'Username can contain at most 30 characters.'],
+      match: [/^[A-z][A-z0-9_-]{2,29}$/, 'Username must contain 3 - 30 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'],
     },
     password: {
       type: String,
