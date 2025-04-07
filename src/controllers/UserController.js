@@ -135,6 +135,7 @@ export class UserController {
     try {
       // authenticate, will throw error if user does not exist or invalid password
       const user = await UserModel.authenticate(username, password)
+
       const result = await this.tokenService.newTokenPair(user)
 
       res.status(201).json(result.tokens)
