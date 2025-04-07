@@ -16,6 +16,15 @@ const tokenService = new TokenService()
  */
 export class UserController {
   /**
+   * Creates an instance of UserController.
+   *
+   * @param {TokenService} tokenService - The token service to use.
+   */
+  constructor (tokenService = new TokenService()) {
+    this.tokenService = tokenService
+  }
+
+  /**
    * Creates a HTML error for the response
    * based on what went wrong.
    *
@@ -64,6 +73,51 @@ export class UserController {
       res.status(201).json({ id })
     } catch (error) {
       next(this.#createHtmlError(error))
+    }
+  }
+
+  /**
+   * Extracts the token from the request header.
+   *
+   * @param {object} req - Express request object.
+   * @returns {string} - The extracted jwt token.
+   */
+  #extractToken (req) {
+    const authorization = req.headers.authorization?.split(' ')
+
+    if (this.#validateHeader(authorization)) {
+      return authorization[1]
+    }
+
+    throw createError(401, 'Invalid refresh token.')
+  }
+
+  /**
+   * Validates that the token has been sent in the correct format.
+   *
+   * @param {string[]} authorization - The authorization header split into an array.
+   * @returns {boolean} - True if the header is valid, otherwise false.
+   */
+  #validateHeader (authorization) {
+    return authorization.length > 1 && authorization[0].toLowerCase() === 'bearer'
+  }
+
+  /**
+   * Expires the old refreshtoken and generates a new pair of
+   * access token + refresh token.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async refresh (req, res, next) {
+    try {
+      const oldRefreshToken = this.#extractToken(req)
+      const tokens = await this.tokenService.refresh(oldRefreshToken)
+
+      res.status(201).json(tokens)
+    } catch (error) {
+      next(error)
     }
   }
 }
