@@ -121,7 +121,7 @@ describe('UserModel', () => {
         password: 'mypassword'
       })
 
-      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
+      await expect(user.validate()).to.be.rejectedWith('Username must contain at least 3 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
     })
 
     it('Username does not start with a letter', async () => {
@@ -140,7 +140,7 @@ describe('UserModel', () => {
           expect(err).to.have.property('errors')
           expect(err.errors).to.have.property('username')
           expect(err.errors.username.message).to.equal(
-            'Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'
+            'Username must contain at least 3 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.'
           )
         })
     })
@@ -156,7 +156,7 @@ describe('UserModel', () => {
         password: 'mypassword'
       })
 
-      await expect(user.validate()).to.be.rejectedWith('Username must contain 3-256 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
+      await expect(user.validate()).to.be.rejectedWith('Username must contain at least 3 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
     })
   })
 })
