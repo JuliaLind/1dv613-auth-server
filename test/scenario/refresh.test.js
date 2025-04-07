@@ -1,209 +1,207 @@
-// /* global after before afterEach */
+/* global after before afterEach */
 
-// import chai from 'chai'
-// import chaiHttp from 'chai-http'
-// import fs from 'fs/promises'
+import chai from 'chai'
+import chaiHttp from 'chai-http'
+import fs from 'fs/promises'
 
-// import { app, connection, server } from '../../src/server.js'
-// import { UserModel } from '../../src/models/UserModel.js'
-// import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
-// import { JwtService } from '../../src/lib/JwtService.js'
-// import { TokenService } from '../../src/services/TokenService.js'
+import { app, connection, server } from '../../src/server.js'
+import { UserModel } from '../../src/models/UserModel.js'
+import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
+import { JwtService } from '../../src/services/JwtService.js'
+import { TokenService } from '../../src/services/TokenService.js'
 
-// process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
+process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
-// const expect = chai.expect
-// chai.use(chaiHttp)
+const expect = chai.expect
+chai.use(chaiHttp)
 
-// describe('test server', () => {
-//   const credentials = {
-//     username: 'julia_initial',
-//     password: '5up3rs3cr3tp@55w0rd',
-//     email: 'julia_initial@student.lnu.se',
-//     birthDate: '1989-02-24'
-//   }
-//   const user = {
-//     ...credentials
-//   }
-//   delete user.password
+describe('scenario - refresh route', () => {
+  const credentials = {
+    username: 'julia_initial',
+    password: '5up3rs3cr3tp@55w0rd',
+    email: 'julia_initial@student.lnu.se',
+    birthDate: '1989-02-24'
+  }
+  const user = {
+    ...credentials
+  }
+  delete user.password
 
-//   before(async () => {
-//     await UserModel.create(credentials)
-//   })
+  before(async () => {
+    await UserModel.create(credentials)
+  })
 
-//   after(async () => {
-//     await UserModel.deleteMany({})
-//     await RefreshTokenModel.deleteMany({})
-//     await connection.disconnect()
-//     await server.close()
-//   })
+  after(async () => {
+    await UserModel.deleteMany({})
+    await RefreshTokenModel.deleteMany({})
+  })
 
-//   afterEach(async () => {
-//     await RefreshTokenModel.deleteMany({})
-//   })
+  afterEach(async () => {
+    await RefreshTokenModel.deleteMany({})
+  })
 
-//   describe('Refresh route', () => {
-//     const tokenService = new TokenService()
-//     describe('Token ok', async () => {
-//       it('Should receive new access token and new refresh token', async function () {
-//         const data = await tokenService.newTokenPair(user)
-//         const tokens = data.tokens
-//         const refreshToken = tokens.refreshToken
-//         const jti = data.jti
+  const tokenService = new TokenService()
 
-//         const res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bearer ${refreshToken}`)
-//           .send()
 
-//         expect(res).to.have.status(201)
-//         expect(res.body).to.have.property('accessToken')
-//         expect(res.body).to.have.property('refreshToken')
+  describe('Token ok', async () => {
+    it('Should receive new access token and new refresh token', async function () {
+      const data = await tokenService.newTokenPair(user)
+      const tokens = data.tokens
+      const refreshToken = tokens.refreshToken
+      const jti = data.jti
 
-//         const accessPayload = await JwtService.decodePayload(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
-//         expect(accessPayload.user.username).to.equal(user.username)
-//         expect(accessPayload.user.email).to.equal(user.email)
-//         expect(accessPayload.user.birthDate).to.equal(user.birthDate)
+      const res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bearer ${refreshToken}`)
+        .send()
 
-//         const newRefreshTokenPayload = await JwtService.decodePayload(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
-//         expect(newRefreshTokenPayload.user.username).to.equal(user.username)
-//         expect(newRefreshTokenPayload.user.birthDate).to.equal(user.birthDate)
+      expect(res).to.have.status(201)
+      expect(res.body).to.have.property('accessToken')
+      expect(res.body).to.have.property('refreshToken')
 
-//         expect(newRefreshTokenPayload.user.email).to.equal(user.email)
-//         expect(newRefreshTokenPayload.jti).to.not.equal(jti)
+      const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
+      expect(accessPayload.user.username).to.equal(user.username)
+      expect(accessPayload.user.email).to.equal(user.email)
+      expect(accessPayload.user.birthDate).to.equal(user.birthDate)
 
-//         const docNew = await RefreshTokenModel.findById(newRefreshTokenPayload.jti)
-//         expect(docNew).to.have.property('next', null)
-//         expect(docNew).to.have.property('expired', false)
+      const newRefreshTokenPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
+      expect(newRefreshTokenPayload.user.username).to.equal(user.username)
+      expect(newRefreshTokenPayload.user.birthDate).to.equal(user.birthDate)
 
-//         const docOld = await RefreshTokenModel.findById(jti)
-//         expect(docOld.next.toString()).to.equal(newRefreshTokenPayload.jti)
-//         expect(docOld).to.have.property('expired', true)
-//       })
+      expect(newRefreshTokenPayload.user.email).to.equal(user.email)
+      expect(newRefreshTokenPayload.jti).to.not.equal(jti)
 
-//       it('Should be able to refresh multiple times', async function () {
-//         const data = await tokenService.newTokenPair(user)
-//         let refreshToken = data.tokens.refreshToken
+      const docNew = await RefreshTokenModel.findById(newRefreshTokenPayload.jti)
+      expect(docNew).to.have.property('next', null)
+      expect(docNew).to.have.property('expired', false)
 
-//         let res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bearer ${refreshToken}`)
-//           .send()
+      const docOld = await RefreshTokenModel.findById(jti)
+      expect(docOld.next.toString()).to.equal(newRefreshTokenPayload.jti)
+      expect(docOld).to.have.property('expired', true)
+    })
 
-//         expect(res).to.have.status(201)
+    it('Should be able to refresh multiple times', async function () {
+      const data = await tokenService.newTokenPair(user)
+      let refreshToken = data.tokens.refreshToken
 
-//         refreshToken = res.body.refreshToken
+      let res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bearer ${refreshToken}`)
+        .send()
 
-//         res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bearer ${refreshToken}`)
-//           .send()
+      expect(res).to.have.status(201)
 
-//         expect(res).to.have.status(201)
+      refreshToken = res.body.refreshToken
 
-//         refreshToken = res.body.refreshToken
+      res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bearer ${refreshToken}`)
+        .send()
 
-//         res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bearer ${refreshToken}`)
-//           .send()
+      expect(res).to.have.status(201)
 
-//         expect(res).to.have.status(201)
-//         refreshToken = res.body.refreshToken
-//         const payload = await JwtService.decodePayload(refreshToken, process.env.REFRESH_TOKEN_KEY)
+      refreshToken = res.body.refreshToken
 
-//         const tokens = await RefreshTokenModel.find()
-//         for (const token of tokens) {
-//           if (token._id.toString() === payload.jti) {
-//             expect(token).to.have.property('next', null)
-//             expect(token).to.have.property('expired', false)
-//             continue
-//           }
-//           expect(token.next.toString.length).to.be.greaterThan(0)
-//           expect(token).to.have.property('expired', true)
-//         }
-//       })
-//     })
+      res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bearer ${refreshToken}`)
+        .send()
 
-//     describe('Token not ok', async () => {
-//       it('Reused token should expire own chain', async function () {
-//         const data = await tokenService.newTokenPair(user)
-//         const ses1TokenId = data.jti
+      expect(res).to.have.status(201)
+      refreshToken = res.body.refreshToken
+      const payload = await JwtService.decode(refreshToken, process.env.REFRESH_TOKEN_KEY)
 
-//         let res = await chai.request(app)
-//           .post('/api/v1/login')
-//           .send(credentials)
+      const tokens = await RefreshTokenModel.find()
+      for (const token of tokens) {
+        if (token._id.toString() === payload.jti) {
+          expect(token).to.have.property('next', null)
+          expect(token).to.have.property('expired', false)
+          continue
+        }
+        expect(token.next.toString.length).to.be.greaterThan(0)
+        expect(token).to.have.property('expired', true)
+      }
+    })
+  })
 
-//         // first token for the second session
-//         const ses2Token1 = res.body.refreshToken
-//         let payload = await JwtService.decodePayload(ses2Token1, process.env.REFRESH_TOKEN_KEY)
-//         const ses2Token1Id = payload.jti
+  describe('Token not ok', async () => {
+    it('Reused token should expire own chain', async function () {
+      const data = await tokenService.newTokenPair(user)
+      const ses1TokenId = data.jti
 
-//         res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bearer ${ses2Token1}`)
-//           .send()
+      let res = await chai.request(app)
+        .post('/api/v1/login')
+        .send(credentials)
 
-//         // second token for the second session
-//         const ses2Token2 = res.body.refreshToken
-//         payload = await JwtService.decodePayload(ses2Token2, process.env.REFRESH_TOKEN_KEY)
-//         const ses2Token2Id = payload.jti
+      // first token for the second session
+      const ses2Token1 = res.body.refreshToken
+      let payload = await JwtService.decode(ses2Token1, process.env.REFRESH_TOKEN_KEY)
+      const ses2Token1Id = payload.jti
 
-//         const ses2doc1 = await RefreshTokenModel.findById(ses2Token1Id)
-//         expect(ses2doc1).to.have.property('expired', true)
-//         expect(ses2doc1.next.toString()).to.equal(ses2Token2Id)
+      res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bearer ${ses2Token1}`)
+        .send()
 
-//         // newest token in second chain should of course not be expired
-//         let ses2doc2 = await RefreshTokenModel.findById(ses2Token2Id)
-//         expect(ses2doc2).to.have.property('expired', false)
+      // second token for the second session
+      const ses2Token2 = res.body.refreshToken
+      payload = await JwtService.decode(ses2Token2, process.env.REFRESH_TOKEN_KEY)
+      const ses2Token2Id = payload.jti
 
-//         res = await chai.request(app)
-//           .post('/api/v1/login')
-//           .send(credentials)
+      const ses2doc1 = await RefreshTokenModel.findById(ses2Token1Id)
+      expect(ses2doc1).to.have.property('expired', true)
+      expect(ses2doc1.next.toString()).to.equal(ses2Token2Id)
 
-//         // token for the third session
-//         const ses3Token = res.body.refreshToken
-//         payload = await JwtService.decodePayload(ses3Token, process.env.REFRESH_TOKEN_KEY)
-//         const ses3TokenId = payload.jti
+      // newest token in second chain should of course not be expired
+      let ses2doc2 = await RefreshTokenModel.findById(ses2Token2Id)
+      expect(ses2doc2).to.have.property('expired', false)
 
-//         // reuse expired token
-//         res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bearer ${ses2Token1}`)
-//           .send()
+      res = await chai.request(app)
+        .post('/api/v1/login')
+        .send(credentials)
 
-//         expect(res).to.have.status(401)
-//         expect(res.body).to.not.have.property('accessToken')
-//         expect(res.body).to.not.have.property('refreshToken')
-//         expect(res.body).to.have.property('message', 'Token reuse is not allowed.')
+      // token for the third session
+      const ses3Token = res.body.refreshToken
+      payload = await JwtService.decode(ses3Token, process.env.REFRESH_TOKEN_KEY)
+      const ses3TokenId = payload.jti
 
-//         // chain for session 1 should not be expired
-//         const ses1doc = await RefreshTokenModel.findById(ses1TokenId)
-//         expect(ses1doc).to.have.property('expired', false)
+      // reuse expired token
+      res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bearer ${ses2Token1}`)
+        .send()
 
-//         // newly issued token in chain for session 2 should be expired
-//         ses2doc2 = await RefreshTokenModel.findById(ses2Token2Id)
-//         expect(ses2doc2).to.have.property('expired', true)
+      expect(res).to.have.status(401)
+      expect(res.body).to.not.have.property('accessToken')
+      expect(res.body).to.not.have.property('refreshToken')
+      expect(res.body).to.have.property('message', 'Token reuse is not allowed.')
 
-//         // chain for session 3 should not be expired
-//         const ses3doc = await RefreshTokenModel.findById(ses3TokenId)
-//         expect(ses3doc).to.have.property('expired', false)
-//       })
+      // chain for session 1 should not be expired
+      const ses1doc = await RefreshTokenModel.findById(ses1TokenId)
+      expect(ses1doc).to.have.property('expired', false)
 
-//       it('Invalid token header', async function () {
-//         const data = await tokenService.newTokenPair(user)
-//         const refreshToken = data.tokens.refreshToken
+      // newly issued token in chain for session 2 should be expired
+      ses2doc2 = await RefreshTokenModel.findById(ses2Token2Id)
+      expect(ses2doc2).to.have.property('expired', true)
 
-//         const res = await chai.request(app)
-//           .post('/api/v1/refresh')
-//           .set('Authorization', `Bear ${refreshToken}`)
-//           .send()
+      // chain for session 3 should not be expired
+      const ses3doc = await RefreshTokenModel.findById(ses3TokenId)
+      expect(ses3doc).to.have.property('expired', false)
+    })
 
-//         expect(res).to.have.status(401)
-//         expect(res.body).to.have.property('message', 'Invalid refresh token.')
-//         expect(res.body).to.not.have.property('accessToken')
-//         expect(res.body).to.not.have.property('refreshToken')
-//       })
-//     })
-//   })
-// })
+    it('Invalid token header', async function () {
+      const data = await tokenService.newTokenPair(user)
+      const refreshToken = data.tokens.refreshToken
+
+      const res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', `Bear ${refreshToken}`)
+        .send()
+
+      expect(res).to.have.status(401)
+      expect(res.body).to.have.property('message', 'Invalid authorization header format.')
+      expect(res.body).to.not.have.property('accessToken')
+      expect(res.body).to.not.have.property('refreshToken')
+    })
+  })
+})
