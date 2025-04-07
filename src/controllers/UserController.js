@@ -135,9 +135,33 @@ export class UserController {
     try {
       // authenticate, will throw error if user does not exist or invalid password
       const user = await UserModel.authenticate(username, password)
+
       const result = await this.tokenService.newTokenPair(user)
 
       res.status(201).json(result.tokens)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Checks the user credentials agains db
+   * and generates a new jwt token.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async delete (req, res, next) {
+    const { username, password } = req.body
+
+    try {
+      const refreshToken = this.#extractToken(req)
+      const jti = await this.tokenService.validate(refreshToken, username)
+      await UserModel.delete(username, password)
+      await this.tokenService.expire(jti)
+
+      res.status(204).end()
     } catch (error) {
       next(error)
     }

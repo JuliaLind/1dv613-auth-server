@@ -38,7 +38,7 @@ describe('UserModel', () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
     const res = await UserModel.authenticate(user.username, user.password)
-    expect(res).to.deep.equal({
+    expect(res.toObject()).to.deep.equal({
       username: user.username
     })
   })
@@ -158,5 +158,29 @@ describe('UserModel', () => {
 
       await expect(user.validate()).to.be.rejectedWith('Username must contain 3 - 30 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.')
     })
+  })
+
+  it('Delete user ok', async () => {
+    const user = {
+      deleteOne: sinon.stub().resolves()
+    }
+    sinon.stub(UserModel, 'authenticate').resolves(user)
+
+    await UserModel.delete('julia', 'mypassword')
+    expect(user.deleteOne.calledOnce).to.be.true
+  })
+
+  it('Delete user not ok', async () => {
+    const user = {
+      deleteOne: sinon.stub().resolves(),
+      username: 'julia',
+      password: 'mypassword'
+    }
+
+    sinon.stub(UserModel, 'findOne').resolves(user)
+
+    await expect(UserModel.delete('julia', 'mypassword')).to.be.rejected
+
+    expect(user.deleteOne).to.not.have.been.called
   })
 })
