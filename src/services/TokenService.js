@@ -79,7 +79,7 @@ export class TokenService {
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
         payload = await JwtService.decodeWithoutVerify(oldRefreshToken)
-        await RefreshTokenModel.expireById(payload.jti)
+        await this.expire(payload.jti)
       }
       throw createError(401, error.message)
     }
@@ -101,5 +101,29 @@ export class TokenService {
     await oldTokenDoc.chain(result.jti)
 
     return result.tokens
+  }
+
+  /**
+   * Expires the refresh token in the database.
+   
+   * @param {string} jti - the id of the refresh token
+   */
+  async expire (jti) {
+    await RefreshTokenModel.expireById(jti)
+  }
+
+  /**
+   * Validates that the refresh token is not expired and belongs to the user.
+   *
+   * @param {string} refreshToken - a JWT token
+   * @param {string} username the username of the user
+   * @throws 401 error if the token is invalid
+   */
+  async validate (refreshToken, username) {
+    const payload = await this.decodeRefreshToken(refreshToken)
+    if (payload.user.username !== username) {
+      throw createError(401)
+    }
+    return payload.jti
   }
 }
