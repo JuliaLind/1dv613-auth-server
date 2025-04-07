@@ -13,13 +13,14 @@ import { TokenService } from '../services/TokenService.js'
  * Encapsulates a controller.
  */
 export class UserController {
+  #tokenService
   /**
    * Creates an instance of UserController.
    *
    * @param {TokenService} tokenService - The token service to use.
    */
   constructor (tokenService = new TokenService()) {
-    this.tokenService = tokenService
+    this.#tokenService = tokenService
   }
 
   /**
@@ -113,7 +114,7 @@ export class UserController {
   async refresh (req, res, next) {
     try {
       const oldRefreshToken = this.#extractToken(req)
-      const tokens = await this.tokenService.refresh(oldRefreshToken)
+      const tokens = await this.#tokenService.refresh(oldRefreshToken)
 
       res.status(201).json(tokens)
     } catch (error) {
@@ -136,7 +137,7 @@ export class UserController {
       // authenticate, will throw error if user does not exist or invalid password
       const user = await UserModel.authenticate(username, password)
 
-      const result = await this.tokenService.newTokenPair(user)
+      const result = await this.#tokenService.newTokenPair(user)
 
       res.status(201).json(result.tokens)
     } catch (error) {
@@ -157,9 +158,9 @@ export class UserController {
 
     try {
       const refreshToken = this.#extractToken(req)
-      const jti = await this.tokenService.validate(refreshToken, username)
+      const jti = await this.#tokenService.validate(refreshToken, username)
       await UserModel.delete(username, password)
-      await this.tokenService.expire(jti)
+      await this.#tokenService.expire(jti)
 
       res.status(204).end()
     } catch (error) {
