@@ -118,7 +118,7 @@ export class TokenService {
    * @param {string} refreshToken - a JWT token
    * @param {string} username the username of the user
    * @throws 401 error if the token is invalid
-   * @returns {string} - the id of the refresh token
+   * @returns {Promise<string>} - the id of the refresh token
    */
   async validate (refreshToken, username) {
     const payload = await this.decodeRefreshToken(refreshToken)
