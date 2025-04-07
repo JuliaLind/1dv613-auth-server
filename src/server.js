@@ -24,7 +24,7 @@ try {
     const address = server.address()
     const host = address.address === '::' ? 'localhost' : address.address
     const port = address.port
-  
+
     console.log(`Server running at http://${host}:${port}`)
     console.log('Press Ctrl-C to terminate...')
   })

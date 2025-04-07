@@ -4,7 +4,7 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import fs from 'fs/promises'
 
-import { app, connection, server } from '../../src/server.js'
+import { app } from '../../src/server.js'
 import { UserModel } from '../../src/models/UserModel.js'
 import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
 import { JwtService } from '../../src/services/JwtService.js'
