@@ -47,7 +47,6 @@ describe('scenario - delete route', () => {
       const data = await tokenService.newTokenPair(user)
       const tokens = data.tokens
       let refreshToken = tokens.refreshToken
-      // const jti = data.jti
 
       const res = await chai.request(app)
         .delete('/api/v1/')
@@ -63,6 +62,30 @@ describe('scenario - delete route', () => {
       expect(userCheck).to.be.null
       refreshToken = await RefreshTokenModel.findById(data.jti)
       expect(refreshToken.expired).to.be.true
+      expect(refreshToken.next).to.be.null
+    })
+  })
+
+  describe('Should not delete user', async () => {
+    it('Token ok, password not ok', async function () {
+      const data = await tokenService.newTokenPair(user)
+      const tokens = data.tokens
+      let refreshToken = tokens.refreshToken
+
+      const res = await chai.request(app)
+        .delete('/api/v1/')
+        .set('Authorization', `Bearer ${refreshToken}`)
+        .send({
+          username: credentials.username,
+          password: 'wrong password'
+        })
+
+      expect(res).to.have.status(401)
+
+      const userCheck = await UserModel.findOne({ username: credentials.username })
+      expect(userCheck).not.to.be.null
+      refreshToken = await RefreshTokenModel.findById(data.jti)
+      expect(refreshToken.expired).to.be.false
       expect(refreshToken.next).to.be.null
     })
   })
