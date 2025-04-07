@@ -123,5 +123,4 @@ describe('UserController.delete', () => {
     expect(UserModel.delete).to.have.been.calledWith(req.body.username, req.body.password)
     expect(tokenService.expire).to.not.have.been.called
   })
-
 })
