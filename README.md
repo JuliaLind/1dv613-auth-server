@@ -10,7 +10,6 @@ This document describes the available routes on the authentication server. All e
 
 | Header           | Description                                |
 |------------------|--------------------------------------------|
-| `X-API-Key`      | Used to validate client access             |
 | `Authorization`  |Format: `Bearer <token>` (JWT) |
 
 All requests and responses use `application/json` unless stated otherwise.
@@ -32,7 +31,6 @@ All requests and responses use `application/json` unless stated otherwise.
 ### Required Headers
 
 - `Authorization: Bearer <refresh-token>`
-- `X-API-Key: <your-api-key>`
 
 ### Request Body
 
@@ -62,9 +60,6 @@ All requests and responses use `application/json` unless stated otherwise.
 
 **Description**: Register a new user account. All fields are required.
 
-### Required Headers
-
-- `X-API-Key: <your-api-key>`
 
 ### Request Body
 
@@ -81,11 +76,6 @@ All requests and responses use `application/json` unless stated otherwise.
 
 **Status**: `201 Created`
 
-**Headers**:
-
-```
-Location: /login
-```
 
 **Body**:
 
@@ -110,15 +100,11 @@ Location: /login
 
 **Description**: Log in. All fields are required.
 
-### Required Headers
-
-- `X-API-Key: <your-api-key>`
-
 ### Request Body
 
 ```json
 {
-  "email": "julia@example.com",
+  "username": "julia",
   "password": "myVerySecretPassword"
 }
 ```
@@ -148,12 +134,41 @@ Location: /login
 
 ---
 
+## DELETE /
+
+**Description**: Deletes a user.
+
+### Required Headers
+
+- `Authorization: Bearer <refresh-token>`
+
+
+### Request Body
+
+```json
+{
+  "username": "julia",
+  "password": "myVerySecretPassword"
+}
+```
+
+
+### Status Codes
+
+| Code | Description                          |
+|------|--------------------------------------|
+| 204  | The user has been successfully deleted and the refresh token set as expired        |
+| 401  | Missing or invalid refresh token, username and token do not match, or wrong password |
+
+---
+
 ## Notes
 
 Tokens returned in responses are JWTs signed by the server with assymetric private key.
 
 Access tokens include:
-  nickname
+  username
+  email
   birthDate
 
 Token rotation and chaining is applied to refresh tokens. If a refresh token is re-used, any active referesh token in the same chain will be inactivated. Each new session has a separate refreshtoken-chain.
