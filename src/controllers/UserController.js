@@ -157,9 +157,11 @@ export class UserController {
 
     try {
       const refreshToken = this.#extractToken(req)
-      const jti = await this.#tokenService.validate(refreshToken, username)
-      await UserModel.delete(username, password)
-      await this.#tokenService.expire(jti)
+      const user = await UserModel.authenticate(username, password)
+      await this.#tokenService.validate(refreshToken, user._id.toString())
+
+      await user.deleteOne()
+      await this.#tokenService.expireByUser(user._id)
 
       res.status(204).end()
     } catch (error) {

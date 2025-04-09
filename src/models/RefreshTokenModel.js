@@ -13,7 +13,12 @@ import createError from 'http-errors'
  */
 const schema = new mongoose.Schema({
   next: { type: mongoose.Schema.Types.ObjectId, ref: 'RefreshToken', default: null },
-  expired: { type: Boolean, default: false }
+  expired: { type: Boolean, default: false },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User is required.']
+  }
 },
 {
   timestamps: true,
@@ -28,8 +33,12 @@ const schema = new mongoose.Schema({
  *
  * @returns { string } - The id of the created document.
  */
-schema.statics.newJti = async function () {
-  const doc = await this.create({})
+schema.statics.newJti = async function (userId) {
+  const doc = await this.create({
+    next: null,
+    expired: false,
+    user: userId
+  })
 
   return doc._id.toString()
 }
@@ -74,6 +83,23 @@ schema.statics.authenticate = async function (tokenId) {
     throw createError(401, 'Token reuse is not allowed.')
   }
   return token
+}
+
+schema.statics.expireByUser = async function (userId) {
+  const active = this.find(
+    {
+      user: userId,
+      expired: false
+    }
+  )
+
+  const promises = []
+
+  for (const token of active) {
+    promises.push(token.expire)
+  }
+
+  await Promise.all(promises)
 }
 
 /**

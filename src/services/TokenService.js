@@ -31,7 +31,7 @@ export class TokenService {
    * @returns {Promise<string[]>} - Promise that resolves to the new  refresh token and the id of the refreshtoken.
    */
   async #newRefreshToken (user) {
-    const jti = await RefreshTokenModel.newJti()
+    const jti = await RefreshTokenModel.newJti(user.id)
     const payload = {
       user,
       jti
@@ -120,9 +120,9 @@ export class TokenService {
    * @throws 401 error if the token is invalid
    * @returns {Promise<string>} - the id of the refresh token
    */
-  async validate (refreshToken, username) {
+  async validate (refreshToken, userId) {
     const payload = await this.decodeRefreshToken(refreshToken)
-    if (payload.user.username !== username) {
+    if (payload.user.id !== userId) {
       throw createError(401)
     }
     return payload.jti

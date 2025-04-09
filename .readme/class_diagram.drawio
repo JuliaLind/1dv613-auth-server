@@ -40,10 +40,10 @@
         <mxCell id="LTxy-Lm1yNunXiUcABPg-16" value="+ refresh(oldRefreshToken: string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-10" vertex="1">
           <mxGeometry y="138" width="340" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="nY1DbR7YaoWM7g25EeNT-2" value="+ expire(jti: string)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxy-Lm1yNunXiUcABPg-10">
+        <mxCell id="nY1DbR7YaoWM7g25EeNT-2" value="+ expire(jti: string)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-10" vertex="1">
           <mxGeometry y="164" width="340" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="nY1DbR7YaoWM7g25EeNT-3" value="+ validate(refreshToken: string, username: string)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxy-Lm1yNunXiUcABPg-10">
+        <mxCell id="nY1DbR7YaoWM7g25EeNT-3" value="+ validate(refreshToken: string, username: string)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-10" vertex="1">
           <mxGeometry y="190" width="340" height="26" as="geometry" />
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-17" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;dashed=1;dashPattern=8 8;exitX=-0.009;exitY=0.923;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="nY1DbR7YaoWM7g25EeNT-3" target="LTxy-Lm1yNunXiUcABPg-1" edge="1">
@@ -53,24 +53,21 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-18" value="UserModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="630" y="383" width="350" height="86" as="geometry" />
+          <mxGeometry x="630" y="383" width="350" height="60" as="geometry" />
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-20" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="LTxy-Lm1yNunXiUcABPg-18" vertex="1">
           <mxGeometry y="26" width="350" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="LTxy-Lm1yNunXiUcABPg-21" value="+ authenticate(username: string, password: string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-18" vertex="1">
+        <mxCell id="LTxy-Lm1yNunXiUcABPg-21" value="+ authenticate(email: string, password: string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-18" vertex="1">
           <mxGeometry y="34" width="350" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="nY1DbR7YaoWM7g25EeNT-1" value="+ delete(username: string, password: string)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="LTxy-Lm1yNunXiUcABPg-18">
-          <mxGeometry y="60" width="350" height="26" as="geometry" />
-        </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-22" value="RefreshTokenModel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="330" y="730" width="240" height="190" as="geometry" />
+          <mxGeometry x="330" y="730" width="240" height="216" as="geometry" />
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-24" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
           <mxGeometry y="26" width="240" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="LTxy-Lm1yNunXiUcABPg-25" value="+ newJti(): string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
+        <mxCell id="LTxy-Lm1yNunXiUcABPg-25" value="+ newJti(userId:string|object): string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
           <mxGeometry y="34" width="240" height="26" as="geometry" />
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-23" value="+ expireChain(token: object)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
@@ -82,11 +79,14 @@
         <mxCell id="LTxy-Lm1yNunXiUcABPg-27" value="+ authenticate(jti: string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
           <mxGeometry y="112" width="240" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="LTxy-Lm1yNunXiUcABPg-28" value="+ expireById(jti:string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
+        <mxCell id="USL1-46vAMmcH3fTehHU-1" value="+ expireById(jti:string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" vertex="1" parent="LTxy-Lm1yNunXiUcABPg-22">
           <mxGeometry y="138" width="240" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="LTxy-Lm1yNunXiUcABPg-29" value="+ expire(): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
+        <mxCell id="LTxy-Lm1yNunXiUcABPg-28" value="+ expireByUser(userId:string): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=4" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
           <mxGeometry y="164" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxy-Lm1yNunXiUcABPg-29" value="+ expire(): object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-22" vertex="1">
+          <mxGeometry y="190" width="240" height="26" as="geometry" />
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-30" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.572;exitY=1.077;exitDx=0;exitDy=0;entryX=0.219;entryY=-0.018;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;dashPattern=8 8;exitPerimeter=0;" parent="1" source="nY1DbR7YaoWM7g25EeNT-3" target="LTxy-Lm1yNunXiUcABPg-22" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -123,7 +123,7 @@
         <mxCell id="LTxy-Lm1yNunXiUcABPg-33" value="+ refresh(req: object, res: object, next: object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-32" vertex="1">
           <mxGeometry y="190" width="280" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="nY1DbR7YaoWM7g25EeNT-4" value="+ delete(req: object, res: object, next: object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxy-Lm1yNunXiUcABPg-32">
+        <mxCell id="nY1DbR7YaoWM7g25EeNT-4" value="+ delete(req: object, res: object, next: object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="LTxy-Lm1yNunXiUcABPg-32" vertex="1">
           <mxGeometry y="216" width="280" height="26" as="geometry" />
         </mxCell>
         <mxCell id="LTxy-Lm1yNunXiUcABPg-36" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0;entryDx=0;entryDy=0;dashed=1;dashPattern=8 8;exitX=0.061;exitY=0.923;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="nY1DbR7YaoWM7g25EeNT-4" target="LTxy-Lm1yNunXiUcABPg-10" edge="1">

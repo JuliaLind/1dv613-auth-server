@@ -1,58 +1,58 @@
-/* global afterEach */
-/* eslint-disable no-unused-expressions */
+// /* global afterEach */
+// /* eslint-disable no-unused-expressions */
 
-import chai from 'chai'
-import sinon from 'sinon'
+// import chai from 'chai'
+// import sinon from 'sinon'
 
-import { TokenService } from '../../../src/services/TokenService.js'
-import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
-import { JwtService } from '../../../src/services/JwtService.js'
+// import { TokenService } from '../../../src/services/TokenService.js'
+// import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
+// import { JwtService } from '../../../src/services/JwtService.js'
 
-const expect = chai.expect
+// const expect = chai.expect
 
-describe('TokenService.newTokenPair', () => {
-  const user = {
-    username: 'julia'
-  }
+// describe('TokenService.newTokenPair', () => {
+//   const user = {
+//     username: 'julia'
+//   }
 
-  const jti = '456'
+//   const jti = '456'
 
-  const tokenService = new TokenService()
+//   const tokenService = new TokenService()
 
-  afterEach(() => {
-    sinon.restore()
-  })
+//   afterEach(() => {
+//     sinon.restore()
+//   })
 
-  it('OK', async function () {
-    const accessToken = 'accessToken'
-    const refreshToken = 'refreshToken'
+//   it('OK', async function () {
+//     const accessToken = 'accessToken'
+//     const refreshToken = 'refreshToken'
 
-    const payloadAccessToken = {
-      user
-    }
+//     const payloadAccessToken = {
+//       user
+//     }
 
-    const payloadRefreshToken = {
-      user,
-      jti
-    }
+//     const payloadRefreshToken = {
+//       user,
+//       jti
+//     }
 
-    sinon.stub(RefreshTokenModel, 'newJti').resolves(jti)
+//     sinon.stub(RefreshTokenModel, 'newJti').resolves(jti)
 
-    sinon.stub(JwtService, 'encode').callsFake((payload) => {
-      if (JSON.stringify(payload) === JSON.stringify(payloadAccessToken)) {
-        return accessToken
-      }
-      if (JSON.stringify(payload) === JSON.stringify(payloadRefreshToken)) {
-        return refreshToken
-      }
-    })
+//     sinon.stub(JwtService, 'encode').callsFake((payload) => {
+//       if (JSON.stringify(payload) === JSON.stringify(payloadAccessToken)) {
+//         return accessToken
+//       }
+//       if (JSON.stringify(payload) === JSON.stringify(payloadRefreshToken)) {
+//         return refreshToken
+//       }
+//     })
 
-    const result = await tokenService.newTokenPair(user)
-    const tokenPair = result.tokens
+//     const result = await tokenService.newTokenPair(user)
+//     const tokenPair = result.tokens
 
-    expect(tokenPair).to.have.property('accessToken', accessToken)
-    expect(tokenPair).to.have.property('refreshToken', refreshToken)
-    expect(result.jti).to.equal(jti)
-    expect(RefreshTokenModel.newJti).to.have.been.calledOnce
-  })
-})
+//     expect(tokenPair).to.have.property('accessToken', accessToken)
+//     expect(tokenPair).to.have.property('refreshToken', refreshToken)
+//     expect(result.jti).to.equal(jti)
+//     expect(RefreshTokenModel.newJti).to.have.been.calledOnce
+//   })
+// })

@@ -17,7 +17,6 @@ chai.use(chaiHttp)
 
 describe('scenario - delete route', () => {
   const credentials = {
-    username: 'julia_initial',
     password: '5up3rs3cr3tp@55w0rd',
     email: 'julia_initial@student.lnu.se',
     birthDate: '1989-02-24'
@@ -26,9 +25,11 @@ describe('scenario - delete route', () => {
     ...credentials
   }
   delete user.password
+  delete user.email
 
   beforeEach(async () => {
-    await UserModel.create(credentials)
+    const res = await UserModel.create(credentials)
+    user.id = res._id.toString()
   })
 
   afterEach(async () => {
@@ -43,7 +44,7 @@ describe('scenario - delete route', () => {
   const tokenService = new TokenService()
 
   describe('Should successfully delete user', async () => {
-    it('Token ok, username and password ok', async function () {
+    it('Token ok, email and password ok', async function () {
       const data = await tokenService.newTokenPair(user)
       const tokens = data.tokens
       let refreshToken = tokens.refreshToken
@@ -52,13 +53,13 @@ describe('scenario - delete route', () => {
         .delete('/api/v1/')
         .set('Authorization', `Bearer ${refreshToken}`)
         .send({
-          username: credentials.username,
+          email: credentials.email,
           password: credentials.password
         })
 
       expect(res).to.have.status(204)
 
-      const userCheck = await UserModel.findOne({ username: credentials.username })
+      const userCheck = await UserModel.findOne({ email: credentials.email })
       expect(userCheck).to.be.null
       refreshToken = await RefreshTokenModel.findById(data.jti)
       expect(refreshToken.expired).to.be.true
@@ -76,13 +77,13 @@ describe('scenario - delete route', () => {
         .delete('/api/v1/')
         .set('Authorization', `Bearer ${refreshToken}`)
         .send({
-          username: credentials.username,
+          email: credentials.email,
           password: 'wrong password'
         })
 
       expect(res).to.have.status(401)
 
-      const userCheck = await UserModel.findOne({ username: credentials.username })
+      const userCheck = await UserModel.findOne({ email: credentials.email })
       expect(userCheck).not.to.be.null
       refreshToken = await RefreshTokenModel.findById(data.jti)
       expect(refreshToken.expired).to.be.false

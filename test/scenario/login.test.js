@@ -16,7 +16,6 @@ chai.use(chaiHttp)
 
 describe('scenario - login route', () => {
   const credentials = {
-    username: 'julia_initial',
     password: '5up3rs3cr3tp@55w0rd',
     email: 'julia@student.lnu.se',
     birthDate: '1989-02-24'
@@ -25,7 +24,8 @@ describe('scenario - login route', () => {
   const user = {
     ...credentials
   }
-  delete user.password
+  delete user.password  
+  delete user.email
 
   before(async () => {
     await UserModel.create(credentials)
@@ -50,12 +50,14 @@ describe('scenario - login route', () => {
       expect(res.body).to.have.property('refreshToken')
 
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
-      expect(accessPayload.user.username).to.equal(user.username)
+      expect(accessPayload.user.id).to.equal(res.body.id)
       expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user).to.not.have.property('password')
+      expect(accessPayload.user.birthDate).to.equal(credentials.birthDate)
 
       const refreshPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
-      expect(refreshPayload.user.username).to.equal(user.username)
+      expect(refreshPayload.user.id).to.equal(user.id)
+      expect(refreshPayload.user.birthDate).to.equal(user.birthDate)
       expect(refreshPayload.user).to.not.have.property('email')
       expect(refreshPayload.user).to.not.have.property('password')
       expect(refreshPayload).to.have.property('jti')
@@ -92,21 +94,21 @@ describe('scenario - login route', () => {
       {
         issue: 'wrong password',
         credentials: {
-          username: credentials.username,
+          email: credentials.email,
           password: 'wrongpassword'
         }
       },
       {
-        issue: 'wrong username',
+        issue: 'wrong email',
         credentials: {
-          username: 'wrongusername',
+          email: 'wrongemail',
           password: 'wrongpassword'
         }
       },
       {
         issue: 'password not provided',
         credentials: {
-          username: credentials.username
+          email: credentials.email
         }
       },
       {

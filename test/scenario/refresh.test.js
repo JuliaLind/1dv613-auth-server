@@ -17,7 +17,6 @@ chai.use(chaiHttp)
 
 describe('scenario - refresh route', () => {
   const credentials = {
-    username: 'julia_initial',
     password: '5up3rs3cr3tp@55w0rd',
     email: 'julia_initial@student.lnu.se',
     birthDate: '1989-02-24'
@@ -29,7 +28,8 @@ describe('scenario - refresh route', () => {
   delete user.email
 
   before(async () => {
-    await UserModel.create(credentials)
+    const res = await UserModel.create(credentials)
+    user.id = res._id.toString()
   })
 
   after(async () => {
@@ -60,12 +60,12 @@ describe('scenario - refresh route', () => {
       expect(res.body).to.have.property('refreshToken')
 
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
-      expect(accessPayload.user.username).to.equal(user.username)
+      expect(accessPayload.user.id).to.equal(user.id)
       expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user.birthDate).to.equal(user.birthDate)
 
       const newRefreshTokenPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
-      expect(newRefreshTokenPayload.user.username).to.equal(user.username)
+      expect(newRefreshTokenPayload.user.id).to.equal(user.id)
       expect(newRefreshTokenPayload.user.birthDate).to.equal(user.birthDate)
 
       expect(newRefreshTokenPayload.user).to.not.have.property('email')

@@ -30,6 +30,7 @@ const convertOptions = Object.freeze({
    * @returns {object} - the transformed object
    */
   transform: (doc, ret) => {
+    ret.id = ret._id.toString()
     delete ret._id
     delete ret.password
     delete ret.email
@@ -40,13 +41,6 @@ const convertOptions = Object.freeze({
 // Create a schema.
 const schema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: [true, 'Username is required.'],
-      unique: true,
-      trim: true,
-      match: [/^[A-z][A-z0-9_-]{2,29}$/, 'Username must contain 3 - 30 characters and begin with a letter. Username can only contain letters, numbers, underscores and hyphens.']
-    },
     password: {
       type: String,
       required: [true, 'Password is required.'],
@@ -108,15 +102,15 @@ function throwWrongCredentialsError () {
 /**
  * Authenticates a user by comparing the passed password to the stored password hash.
  *
- * @param {string} username - The username of the user.
+ * @param {string} email - The email of the user.
  * @param {string} password - The password of the user.
  * @returns {string[]} a jwt token and the refresh token.
  */
-schema.statics.authenticate = async function (username, password) {
-  if (!username || !password) {
+schema.statics.authenticate = async function (email, password) {
+  if (!email || !password) {
     throwWrongCredentialsError()
   }
-  const user = await this.findOne({ username })
+  const user = await this.findOne({ email })
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throwWrongCredentialsError()
@@ -132,7 +126,6 @@ schema.statics.authenticate = async function (username, password) {
  * @param {string} password the password of the user.
  */
 schema.statics.delete = async function (username, password) {
-  const user = await this.authenticate(username, password)
   await user.deleteOne()
 }
 
