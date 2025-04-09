@@ -119,15 +119,6 @@ schema.statics.authenticate = async function (email, password) {
   return user
 }
 
-/**
- * Delete a user after authenticating with username and password.
- *
- * @param {string} username the username of the user.
- * @param {string} password the password of the user.
- */
-schema.statics.delete = async function (username, password) {
-  await user.deleteOne()
-}
 
 // Create a model using the schema.
 export const UserModel = mongoose.model('User', schema)

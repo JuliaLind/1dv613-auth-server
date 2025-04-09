@@ -11,6 +11,9 @@
 // const expect = chai.expect
 
 // describe('UserController.delete', () => {
+//   before(() => {
+//     UserModel.deleteMany()
+//   })
 //   afterEach(() => {
 //     sinon.restore()
 //   })
@@ -23,7 +26,7 @@
 //         authorization: 'Bearer ' + refreshToken
 //       },
 //       body: {
-//         username: 'julia',
+//         email: 'julia',
 //         password: 'mypassword'
 //       }
 //     }
@@ -36,7 +39,7 @@
 
 //     const tokenService = new TokenService()
 //     tokenService.validate = sinon.stub().resolves('123')
-//     sinon.stub(UserModel, 'delete').resolves()
+
 //     tokenService.expire = sinon.stub().resolves()
 
 //     const userController = new UserController(tokenService)
@@ -46,8 +49,7 @@
 //     expect(next).not.to.have.been.called
 //     expect(res.status).to.have.been.calledWith(204)
 //     expect(res.json).to.not.have.been.called
-//     expect(tokenService.validate).to.have.been.calledWith(refreshToken, req.body.username)
-//     expect(UserModel.delete).to.have.been.calledWith(req.body.username, req.body.password)
+
 //     expect(tokenService.expire).to.have.been.calledWith('123')
 //   })
 
@@ -57,7 +59,7 @@
 //         authorization: 'Bearer ' + refreshToken
 //       },
 //       body: {
-//         username: 'julia',
+//         email: 'julia',
 //         password: 'mypassword'
 //       }
 //     }
@@ -82,8 +84,7 @@
 //     }))
 //     expect(res.status).to.not.have.been.called
 //     expect(res.json).to.not.have.been.called
-//     expect(tokenService.validate).to.have.been.calledWith(refreshToken, req.body.username)
-//     expect(UserModel.delete).to.not.have.been.called
+
 //     expect(tokenService.expire).to.not.have.been.called
 //   })
 
@@ -93,7 +94,7 @@
 //         authorization: 'Bearer ' + refreshToken
 //       },
 //       body: {
-//         username: 'julia',
+//         email: 'julia@lnu.com',
 //         password: 'mypassword'
 //       }
 //     }
@@ -106,7 +107,7 @@
 
 //     const tokenService = new TokenService()
 //     tokenService.validate = sinon.stub().resolves('123')
-//     sinon.stub(UserModel, 'delete').throws(createError(401, 'Credentials invalid or not provided.'))
+//     sinon.stub(UserModel, 'authenticate').throws(createError(401, 'Credentials invalid or not provided.'))
 //     tokenService.expire = sinon.stub().resolves()
 
 //     const userController = new UserController(tokenService)
@@ -119,8 +120,6 @@
 //     }))
 //     expect(res.status).to.not.have.been.called
 //     expect(res.json).to.not.have.been.called
-//     expect(tokenService.validate).to.have.been.calledWith(refreshToken, req.body.username)
-//     expect(UserModel.delete).to.have.been.calledWith(req.body.username, req.body.password)
 //     expect(tokenService.expire).to.not.have.been.called
 //   })
 // })

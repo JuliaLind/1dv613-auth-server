@@ -1,84 +1,84 @@
-// /* global afterEach */
-// /* eslint-disable no-unused-expressions */
+/* global afterEach */
+/* eslint-disable no-unused-expressions */
 
-// import chai from 'chai'
-// import chaiAsPromised from 'chai-as-promised'
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
 
-// import { TokenService } from '../../../src/services/TokenService.js'
-// import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
-// import { JwtService } from '../../../src/services/JwtService.js'
-// import sinon from 'sinon'
+import { TokenService } from '../../../src/services/TokenService.js'
+import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
+import { JwtService } from '../../../src/services/JwtService.js'
+import sinon from 'sinon'
 
-// chai.use(chaiAsPromised)
-// const expect = chai.expect
+chai.use(chaiAsPromised)
+const expect = chai.expect
 
-// describe('TokenService.decodeRefreshToken', () => {
-//   const user = {
-//     username: 'julia'
-//   }
+describe('TokenService.decodeRefreshToken', () => {
+  const user = {
+    username: 'julia'
+  }
 
-//   const jti = '456'
+  const jti = '456'
 
-//   const payload = {
-//     user,
-//     jti
-//   }
+  const payload = {
+    user,
+    jti
+  }
 
-//   const refreshToken = 'refreshToken'
+  const refreshToken = 'refreshToken'
 
-//   const tokenService = new TokenService()
+  const tokenService = new TokenService()
 
-//   afterEach(() => {
-//     sinon.restore()
-//   })
+  afterEach(() => {
+    sinon.restore()
+  })
 
-//   it('Decode ok, not expired', async function () {
-//     sinon.stub(JwtService, 'decode').resolves(payload)
-//     sinon.stub(JwtService, 'decodeWithoutVerify')
-//     sinon.stub(RefreshTokenModel, 'expireById')
+  it('Decode ok, not expired', async function () {
+    sinon.stub(JwtService, 'decode').resolves(payload)
+    sinon.stub(JwtService, 'decodeWithoutVerify')
+    sinon.stub(RefreshTokenModel, 'expireById')
 
-//     const decoded = await tokenService.decodeRefreshToken(refreshToken)
+    const decoded = await tokenService.decodeRefreshToken(refreshToken)
 
-//     expect(decoded.user.username).to.equal(user.username)
-//     expect(decoded).to.have.property('jti', jti)
-//     expect(JwtService.decodeWithoutVerify).to.not.have.been.called
-//     expect(RefreshTokenModel.expireById).to.not.have.been.called
-//   })
+    expect(decoded.user.username).to.equal(user.username)
+    expect(decoded).to.have.property('jti', jti)
+    expect(JwtService.decodeWithoutVerify).to.not.have.been.called
+    expect(RefreshTokenModel.expireById).to.not.have.been.called
+  })
 
-//   it('Decode not ok, jwt expired (token expiration date)', async function () {
-//     const error = new Error('jwt expired')
-//     error.name = 'TokenExpiredError'
+  it('Decode not ok, jwt expired (token expiration date)', async function () {
+    const error = new Error('jwt expired')
+    error.name = 'TokenExpiredError'
 
-//     sinon.stub(JwtService, 'decode').throws(error)
-//     sinon.stub(JwtService, 'decodeWithoutVerify').resolves(payload)
-//     sinon.stub(RefreshTokenModel, 'expireById')
+    sinon.stub(JwtService, 'decode').throws(error)
+    sinon.stub(JwtService, 'decodeWithoutVerify').resolves(payload)
+    sinon.stub(RefreshTokenModel, 'expireById')
 
-//     await expect(tokenService.decodeRefreshToken(refreshToken))
-//       .to.be.rejected
-//       .then(err => {
-//         expect(err.message).to.equal('jwt expired')
-//         expect(err).to.have.property('statusCode', 401)
-//       })
+    await expect(tokenService.decodeRefreshToken(refreshToken))
+      .to.be.rejected
+      .then(err => {
+        expect(err.message).to.equal('jwt expired')
+        expect(err).to.have.property('statusCode', 401)
+      })
 
-//     expect(JwtService.decodeWithoutVerify).to.have.been.calledWith(refreshToken)
-//     expect(RefreshTokenModel.expireById).to.have.been.calledWith(jti)
-//   })
+    expect(JwtService.decodeWithoutVerify).to.have.been.calledWith(refreshToken)
+    expect(RefreshTokenModel.expireById).to.have.been.calledWith(jti)
+  })
 
-//   it('Decode not ok, jwt missing or malformed', async function () {
-//     const error = new Error('invalid token')
+  it('Decode not ok, jwt missing or malformed', async function () {
+    const error = new Error('invalid token')
 
-//     sinon.stub(JwtService, 'decode').throws(error)
-//     sinon.stub(JwtService, 'decodeWithoutVerify').resolves(payload)
-//     sinon.stub(RefreshTokenModel, 'expireById')
+    sinon.stub(JwtService, 'decode').throws(error)
+    sinon.stub(JwtService, 'decodeWithoutVerify').resolves(payload)
+    sinon.stub(RefreshTokenModel, 'expireById')
 
-//     await expect(tokenService.decodeRefreshToken(refreshToken))
-//       .to.be.rejected
-//       .then(err => {
-//         expect(err.message).to.equal('invalid token')
-//         expect(err).to.have.property('statusCode', 401)
-//       })
+    await expect(tokenService.decodeRefreshToken(refreshToken))
+      .to.be.rejected
+      .then(err => {
+        expect(err.message).to.equal('invalid token')
+        expect(err).to.have.property('statusCode', 401)
+      })
 
-//     expect(JwtService.decodeWithoutVerify).to.not.have.been.called
-//     expect(RefreshTokenModel.expireById).to.not.have.been.called
-//   })
-// })
+    expect(JwtService.decodeWithoutVerify).to.not.have.been.called
+    expect(RefreshTokenModel.expireById).to.not.have.been.called
+  })
+})

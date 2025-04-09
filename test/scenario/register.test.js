@@ -59,13 +59,6 @@ describe('scenario - register route', () => {
   describe('Should not be able to register same user twice', async () => {
     const badCredentials = [
       {
-        issue: 'Username is already registered',
-        credentials: {
-          ...credentials,
-          email: 'some-other-email@hotmail.com'
-        }
-      },
-      {
         issue: 'Email is already registered',
         credentials: {
           ...credentials,
@@ -80,7 +73,7 @@ describe('scenario - register route', () => {
           .send(credentials)
 
         expect(res).to.have.status(409)
-        expect(res.body).to.have.property('message', 'The username and/or email address is already registered')
+        expect(res.body).to.have.property('message', 'The email address is already registered')
       })
     }
   })

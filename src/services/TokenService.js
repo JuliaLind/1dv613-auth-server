@@ -116,7 +116,7 @@ export class TokenService {
    * Validates that the refresh token is not expired and belongs to the user.
    *
    * @param {string} refreshToken - a JWT token
-   * @param {string} username the username of the user
+   * @param {string} userId the id of the user
    * @throws 401 error if the token is invalid
    * @returns {Promise<string>} - the id of the refresh token
    */
