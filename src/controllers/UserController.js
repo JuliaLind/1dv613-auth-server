@@ -48,7 +48,6 @@ export class UserController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
-   * @returns {void}
    */
   async register (req, res, next) {
     try {

@@ -51,12 +51,12 @@ describe('scenario - login route', () => {
 
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
       expect(accessPayload.user.username).to.equal(user.username)
-      expect(accessPayload.user.email).to.equal(user.email)
+      expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user).to.not.have.property('password')
 
       const refreshPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
       expect(refreshPayload.user.username).to.equal(user.username)
-      expect(refreshPayload.user.email).to.equal(user.email)
+      expect(refreshPayload.user).to.not.have.property('email')
       expect(refreshPayload.user).to.not.have.property('password')
       expect(refreshPayload).to.have.property('jti')
 

@@ -99,6 +99,14 @@ describe('scenario - register route', () => {
         }
       },
       {
+        issue: 'Password missing',
+        credentials: {
+          username: 'julia',
+          email: 'julia@student.lnu.se',
+          birthDate: '1989-02-24'
+        }
+      },
+      {
         issue: 'email is invalid, contains two @',
         credentials: {
           username: 'julia',
@@ -108,15 +116,40 @@ describe('scenario - register route', () => {
         }
       },
       {
+        issue: 'email is missing',
+        credentials: {
+          username: 'julia',
+          password: '5up3rs3cr3tp@55w0rd',
+          birthDate: '1989-02-24'
+        }
+      },
+      {
         issue: 'user not 18',
         credentials: {
           username: 'julia',
           password: '5up3rs3cr3tp@55w0rd',
-          email: 'julia@stud@ent.lnu.se',
+          email: 'julia@student.lnu.se',
           birthDate: birthDate.toISOString()
+        }
+      },
+      {
+        issue: 'borthdate is missing',
+        credentials: {
+          username: 'julia',
+          password: '5up3rs3cr3tp@55w0rd',
+          email: 'julia@student.lnu.se'
+        }
+      },
+      {
+        issue: 'username is missing',
+        credentials: {
+          password: '5up3rs3cr3tp@55w0rd',
+          email: 'julia@stud@ent.lnu.se',
+          birthDate: '1989-02-24'
         }
       }
     ]
+
     for (const { issue, credentials } of badCredentials) {
       it(`not ok, ${issue}`, async function () {
         const res = await chai.request(app)

@@ -32,6 +32,7 @@ const convertOptions = Object.freeze({
   transform: (doc, ret) => {
     delete ret._id
     delete ret.password
+    delete ret.email
     return ret
   }
 })

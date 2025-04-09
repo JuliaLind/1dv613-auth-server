@@ -26,6 +26,7 @@ describe('scenario - refresh route', () => {
     ...credentials
   }
   delete user.password
+  delete user.email
 
   before(async () => {
     await UserModel.create(credentials)
@@ -60,14 +61,14 @@ describe('scenario - refresh route', () => {
 
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
       expect(accessPayload.user.username).to.equal(user.username)
-      expect(accessPayload.user.email).to.equal(user.email)
+      expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user.birthDate).to.equal(user.birthDate)
 
       const newRefreshTokenPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
       expect(newRefreshTokenPayload.user.username).to.equal(user.username)
       expect(newRefreshTokenPayload.user.birthDate).to.equal(user.birthDate)
 
-      expect(newRefreshTokenPayload.user.email).to.equal(user.email)
+      expect(newRefreshTokenPayload.user).to.not.have.property('email')
       expect(newRefreshTokenPayload.jti).to.not.equal(jti)
 
       const docNew = await RefreshTokenModel.findById(newRefreshTokenPayload.jti)
