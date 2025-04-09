@@ -168,7 +168,6 @@ Tokens returned in responses are JWTs signed by the server with assymetric priva
 
 Access tokens include:
   username
-  email
   birthDate
 
 Token rotation and chaining is applied to refresh tokens. If a refresh token is re-used, any active referesh token in the same chain will be inactivated. Each new session has a separate refreshtoken-chain.
