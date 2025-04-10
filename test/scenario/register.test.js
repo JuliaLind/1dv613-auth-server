@@ -15,7 +15,6 @@ chai.use(chaiHttp)
 
 describe('scenario - register route', () => {
   const credentials = {
-    username: 'julia_initial',
     password: '5up3rs3cr3tp@55w0rd',
     email: 'julia_initial@student.lnu.se',
     birthDate: '1989-02-24'
@@ -25,25 +24,26 @@ describe('scenario - register route', () => {
     ...credentials
   }
   delete user.password
+  delete user.email
 
-  before(async () => {
-    await UserModel.create(credentials)
+  beforeEach(async () => {
+    const res = await UserModel.create(credentials)
+    user.id = res._id.toString()
   })
 
   after(async () => {
-    await UserModel.deleteMany({})
     await connection.disconnect()
     await server.close()
   })
 
   afterEach(async () => {
-    await RefreshTokenModel.deleteMany({})
+    await RefreshTokenModel.deleteMany()
+    await UserModel.deleteMany()
   })
 
   describe('Credentials ok', async () => {
     it('Should be able to register a new user', async function () {
       const credentials = {
-        username: 'jl225vf',
         password: '5up3rs3cr3tp@55w0rd',
         email: 'julia@myemail.com',
         birthDate: '1989-02-24'
@@ -60,10 +60,7 @@ describe('scenario - register route', () => {
     const badCredentials = [
       {
         issue: 'Email is already registered',
-        credentials: {
-          ...credentials,
-          username: 'someOtherUsername'
-        }
+        credentials
       }
     ]
     for (const { issue, credentials } of badCredentials) {
@@ -85,7 +82,6 @@ describe('scenario - register route', () => {
       {
         issue: 'Too short password',
         credentials: {
-          username: 'julia',
           password: '',
           email: 'julia@student.lnu.se',
           birthDate: '1989-02-24'
@@ -94,7 +90,6 @@ describe('scenario - register route', () => {
       {
         issue: 'Password missing',
         credentials: {
-          username: 'julia',
           email: 'julia@student.lnu.se',
           birthDate: '1989-02-24'
         }
@@ -102,7 +97,6 @@ describe('scenario - register route', () => {
       {
         issue: 'email is invalid, contains two @',
         credentials: {
-          username: 'julia',
           password: '5up3rs3cr3tp@55w0rd',
           email: 'julia@stud@ent.lnu.se',
           birthDate: '1989-02-24'
@@ -111,7 +105,6 @@ describe('scenario - register route', () => {
       {
         issue: 'email is missing',
         credentials: {
-          username: 'julia',
           password: '5up3rs3cr3tp@55w0rd',
           birthDate: '1989-02-24'
         }
@@ -119,28 +112,18 @@ describe('scenario - register route', () => {
       {
         issue: 'user not 18',
         credentials: {
-          username: 'julia',
           password: '5up3rs3cr3tp@55w0rd',
           email: 'julia@student.lnu.se',
           birthDate: birthDate.toISOString()
         }
       },
       {
-        issue: 'borthdate is missing',
+        issue: 'birthdate is missing',
         credentials: {
-          username: 'julia',
           password: '5up3rs3cr3tp@55w0rd',
           email: 'julia@student.lnu.se'
         }
       },
-      {
-        issue: 'username is missing',
-        credentials: {
-          password: '5up3rs3cr3tp@55w0rd',
-          email: 'julia@stud@ent.lnu.se',
-          birthDate: '1989-02-24'
-        }
-      }
     ]
 
     for (const { issue, credentials } of badCredentials) {

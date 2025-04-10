@@ -92,7 +92,7 @@ describe('UserController.register', () => {
   it('not ok, validation error', async () => {
     const error = new Error('Validation error')
     error.errors = {
-      emil: {
+      email: {
         message: 'Email is required'
       }
     }

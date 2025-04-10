@@ -28,7 +28,8 @@ describe('scenario - login route', () => {
   delete user.email
 
   before(async () => {
-    await UserModel.create(credentials)
+    const res = await UserModel.create(credentials)
+    user.id = res._id.toString()
   })
 
   after(async () => {
@@ -50,7 +51,7 @@ describe('scenario - login route', () => {
       expect(res.body).to.have.property('refreshToken')
 
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
-      expect(accessPayload.user.id).to.equal(res.body.id)
+      expect(accessPayload.user.id).to.equal(user.id)
       expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user).to.not.have.property('password')
       expect(accessPayload.user.birthDate).to.equal(credentials.birthDate)

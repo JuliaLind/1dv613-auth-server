@@ -37,10 +37,6 @@ describe('scenario - delete route', () => {
     await RefreshTokenModel.deleteMany({})
   })
 
-  afterEach(async () => {
-    await RefreshTokenModel.deleteMany({})
-  })
-
   const tokenService = new TokenService()
 
   describe('Should successfully delete user', async () => {

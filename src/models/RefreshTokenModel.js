@@ -86,7 +86,7 @@ schema.statics.authenticate = async function (tokenId) {
 }
 
 schema.statics.expireByUser = async function (userId) {
-  const active = this.find(
+  const active = await this.find(
     {
       user: userId,
       expired: false

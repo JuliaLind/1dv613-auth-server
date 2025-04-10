@@ -158,11 +158,12 @@ export class UserController {
       const user = await UserModel.authenticate(email, password)
       await this.#tokenService.validate(refreshToken, user._id.toString())
 
+      await this.#tokenService.expireByUser(user._id.toString())
       await user.deleteOne()
-      await this.#tokenService.expireByUser(user._id)
 
       res.status(204).end()
     } catch (error) {
+      console.log('DELETE ERROR:', error)
       next(error)
     }
   }

@@ -113,6 +113,15 @@ export class TokenService {
   }
 
   /**
+   * Expires the refresh token in the database.
+   *
+   * @param {string} userId - the id of the refresh token
+   */
+  async expireByUser (userId) {
+    await RefreshTokenModel.expireByUser(userId)
+  }
+
+  /**
    * Validates that the refresh token is not expired and belongs to the user.
    *
    * @param {string} refreshToken - a JWT token

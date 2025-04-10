@@ -9,7 +9,7 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import createError from 'http-errors'
 import validator from 'validator'
-import { differenceInYears } from 'date-fns'
+import { differenceInYears, formatDate } from 'date-fns'
 
 // Restrictions
 
@@ -31,6 +31,7 @@ const convertOptions = Object.freeze({
    */
   transform: (doc, ret) => {
     ret.id = ret._id.toString()
+    ret.birthDate = formatDate(ret.birthDate, 'yyyy-MM-dd')
     delete ret._id
     delete ret.password
     delete ret.email
