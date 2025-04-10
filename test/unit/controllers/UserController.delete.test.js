@@ -38,7 +38,15 @@ describe('UserController.delete', () => {
     const next = sinon.stub()
 
     const tokenService = new TokenService()
-    tokenService.validate = sinon.stub().resolves('123')
+    tokenService.validate = sinon.stub().resolves()
+
+    const user = {
+      _id: {
+        toString: () => '123'
+      },
+      deleteOne: sinon.stub().resolves()
+    }
+    sinon.stub(UserModel, 'authenticate').resolves(user)
 
     tokenService.expireByUser = sinon.stub().resolves()
 
@@ -50,7 +58,9 @@ describe('UserController.delete', () => {
     expect(res.status).to.have.been.calledWith(204)
     expect(res.json).to.not.have.been.called
 
-    expect(tokenService.expire).to.have.been.calledWith('123')
+    expect(tokenService.expireByUser).to.have.been.calledWith('123')
+    expect(user.deleteOne).to.have.been.calledOnce
+    expect(tokenService.validate).to.have.been.calledWith(refreshToken, '123')
   })
 
   it('Not ok, validation failed', async () => {
@@ -72,7 +82,16 @@ describe('UserController.delete', () => {
 
     const tokenService = new TokenService()
     tokenService.validate = sinon.stub().throws(createError(401))
-    tokenService.expire = sinon.stub().resolves()
+
+    const user = {
+      _id: {
+        toString: () => '123'
+      },
+      deleteOne: sinon.stub().resolves()
+    }
+    sinon.stub(UserModel, 'authenticate').resolves(user)
+
+    tokenService.expireByUser = sinon.stub().resolves()
 
     const userController = new UserController(tokenService)
 
@@ -84,7 +103,7 @@ describe('UserController.delete', () => {
     expect(res.status).to.not.have.been.called
     expect(res.json).to.not.have.been.called
 
-    expect(tokenService.expire).to.not.have.been.called
+    expect(tokenService.expireByUser).to.not.have.been.called
   })
 
   it('Not Ok, authentication failed', async () => {
