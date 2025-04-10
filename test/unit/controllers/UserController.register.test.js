@@ -1,4 +1,4 @@
-/* global afterEach */
+/* global before afterEach */
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
@@ -16,7 +16,6 @@ describe('UserController.register', () => {
   afterEach(() => {
     sinon.restore()
   })
-
 
   const email = 'julia@myemail.com'
   const birthDate = '1989-02-24'

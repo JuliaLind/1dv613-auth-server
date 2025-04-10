@@ -1,4 +1,4 @@
-/* global after before afterEach */
+/* global after beforeEach afterEach */
 
 import chai from 'chai'
 import chaiHttp from 'chai-http'
@@ -123,7 +123,7 @@ describe('scenario - register route', () => {
           password: '5up3rs3cr3tp@55w0rd',
           email: 'julia@student.lnu.se'
         }
-      },
+      }
     ]
 
     for (const { issue, credentials } of badCredentials) {

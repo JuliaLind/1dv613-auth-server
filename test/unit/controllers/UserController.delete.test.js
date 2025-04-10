@@ -1,4 +1,4 @@
-/* global afterEach */
+/* global before afterEach */
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
@@ -14,6 +14,7 @@ describe('UserController.delete', () => {
   before(() => {
     UserModel.deleteMany()
   })
+
   afterEach(() => {
     sinon.restore()
   })
@@ -42,6 +43,11 @@ describe('UserController.delete', () => {
 
     const user = {
       _id: {
+        /**
+         * Returns the id of the user as a string.
+         *
+         * @returns {string} The id of the user.
+         */
         toString: () => '123'
       },
       deleteOne: sinon.stub().resolves()
@@ -85,6 +91,11 @@ describe('UserController.delete', () => {
 
     const user = {
       _id: {
+        /**
+         * Returns the id of the user as a string.
+         *
+         * @returns {string} The id of the user.
+         */
         toString: () => '123'
       },
       deleteOne: sinon.stub().resolves()

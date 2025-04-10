@@ -24,7 +24,7 @@ describe('scenario - login route', () => {
   const user = {
     ...credentials
   }
-  delete user.password  
+  delete user.password
   delete user.email
 
   before(async () => {

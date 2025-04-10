@@ -33,7 +33,7 @@ describe('UserModel', () => {
 
     user.toObject = sinon.stub().returns({
       id: user.id,
-      birthDate: user.birthDate,
+      birthDate: user.birthDate
     })
   })
 
@@ -43,10 +43,9 @@ describe('UserModel', () => {
     const res = await UserModel.authenticate(user.email, user.password)
     expect(res.toObject()).to.deep.equal({
       id: user.id,
-      birthDate: user.birthDate,
+      birthDate: user.birthDate
     })
   })
-
 
   it('authenticate Not Ok, missing password', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)

@@ -31,6 +31,7 @@ const schema = new mongoose.Schema({
  * and returns the id of the document to be used as the jti
  * (JWT ID).
  *
+ * @param {string|object} userId - the user id or user object
  * @returns { string } - The id of the created document.
  */
 schema.statics.newJti = async function (userId) {
@@ -85,6 +86,11 @@ schema.statics.authenticate = async function (tokenId) {
   return token
 }
 
+/**
+ * Expires all active refresh tokens for a user.
+ *
+ * @param {string|object} userId - the id of a user document
+ */
 schema.statics.expireByUser = async function (userId) {
   const active = await this.find(
     {
