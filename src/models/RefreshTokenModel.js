@@ -96,7 +96,7 @@ schema.statics.expireByUser = async function (userId) {
   const promises = []
 
   for (const token of active) {
-    promises.push(token.expire)
+    promises.push(token.expire())
   }
 
   await Promise.all(promises)

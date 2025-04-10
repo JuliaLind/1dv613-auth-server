@@ -20,9 +20,9 @@ describe('TokenService.expire', () => {
     sinon.stub(RefreshTokenModel, 'expireByUser').resolves()
     const tokenService = new TokenService()
     const userId = '456'
-    await tokenService.expire(userId)
+    await tokenService.expireByUser(userId)
 
-    expect(RefreshTokenModel.expireById).to.have.been.calledOnce
-    expect(RefreshTokenModel.expireById).to.have.been.calledWith(jti)
+    expect(RefreshTokenModel.expireByUser).to.have.been.calledOnce
+    expect(RefreshTokenModel.expireByUser).to.have.been.calledWith(userId)
   })
 })
