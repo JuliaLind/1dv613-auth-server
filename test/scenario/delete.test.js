@@ -47,7 +47,6 @@ describe('scenario - delete route', () => {
 
       const res = await chai.request(app)
         .delete('/api/v1/')
-
         .send({
           email: credentials.email,
           password: credentials.password
@@ -71,7 +70,6 @@ describe('scenario - delete route', () => {
 
       const res = await chai.request(app)
         .delete('/api/v1/')
-        .set('Authorization', `Bearer ${refreshToken}`)
         .send({
           email: credentials.email,
           password: 'wrong password'

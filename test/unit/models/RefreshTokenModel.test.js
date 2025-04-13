@@ -133,10 +133,50 @@ describe('RefreshTokenModel', () => {
     expect(doc.save).to.have.been.calledOnce
   })
 
+  it('expireByUser Ok', async () => {
+    const userId = new mongoose.Types.ObjectId()
+    const doc1 = new RefreshTokenModel({
+      user: userId,
+      expired: false,
+      next: null
+    })
+
+    const doc2 = new RefreshTokenModel({
+      user: userId,
+      expired: false,
+      next: null
+    })
+
+    const doc3 = new RefreshTokenModel({
+      user: userId,
+      expired: false,
+      next: null
+    })
+
+    sinon.stub(doc1, 'expire').resolves()
+    sinon.stub(doc2, 'expire').resolves()
+    sinon.stub(doc3, 'expire').resolves()
+
+    sinon.stub(RefreshTokenModel, 'find').resolves([doc1, doc2, doc3])
+
+    await RefreshTokenModel.expireByUser(userId)
+
+    expect(doc1.expire).to.have.been.calledOnce
+    expect(doc2.expire).to.have.been.calledOnce
+    expect(doc3.expire).to.have.been.calledOnce
+
+    expect(RefreshTokenModel.find).to.have.been.calledOnce
+    expect(RefreshTokenModel.find).to.have.been.calledWith(sinon.match({
+      user: userId,
+      expired: false
+    }))
+  })
+
   it('expire ok', async () => {
     const doc = new RefreshTokenModel({
       next: null,
-      expired: false
+      expired: false,
+      user: new mongoose.Types.ObjectId()
     })
 
     sinon.stub(doc, 'save').resolves()

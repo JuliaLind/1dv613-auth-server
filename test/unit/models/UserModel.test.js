@@ -102,5 +102,20 @@ describe('UserModel', () => {
 
       await expect(user.validate()).to.be.rejectedWith('Email must be a valid email address.')
     })
+
+    it('toObject', async () => {
+      const user = new UserModel({
+        email: 'julia@mye@mail.com',
+        birthDate: '1989-02-24',
+        password: 'mypassword'
+      })
+
+      const obj = user.toObject()
+
+      expect(obj).to.not.have.property('email')
+      expect(obj).to.not.have.property('password')
+      expect(obj).to.have.property('birthDate', '1989-02-24')
+      expect(obj).to.have.property('id', user._id.toString())
+    })
   })
 })

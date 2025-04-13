@@ -161,7 +161,6 @@ export class UserController {
 
       res.status(204).end()
     } catch (error) {
-      console.log('DELETE ERROR:', error)
       next(error)
     }
   }
