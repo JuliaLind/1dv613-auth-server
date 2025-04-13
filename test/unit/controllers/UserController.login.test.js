@@ -59,7 +59,7 @@ describe('UserController.login', () => {
     expect(tokenService.newTokenPair).to.have.been.calledWith(user)
   })
 
-  it('not ok, faied authentication', async () => {
+  it('not ok, failed authentication', async () => {
     const body = {
       email,
       password

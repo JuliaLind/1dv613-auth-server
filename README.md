@@ -18,7 +18,6 @@ All requests and responses use `application/json` unless stated otherwise.
 
 | Code | Description                          |
 |------|--------------------------------------|
-| 401  | Missing or invalid API key |
 | 404  | Not found        |
 | 500  | Server error |
 
@@ -66,7 +65,6 @@ All requests and responses use `application/json` unless stated otherwise.
 ```json
 {
   "email": "julia@example.com",
-  "nickname": "julia_l",
   "birthDate": "1989-02-24",
   "password": "myVerySecretPassword"
 }
@@ -91,7 +89,6 @@ All requests and responses use `application/json` unless stated otherwise.
 |------|--------------------------------------|
 | 201  | User registered successfully         |
 | 400  | Bad request |
-| 401  | Missing or invalid API key           |
 | 409  | The nickname or email is already registered |
 
 ---
@@ -104,7 +101,7 @@ All requests and responses use `application/json` unless stated otherwise.
 
 ```json
 {
-  "username": "julia",
+  "email": "julia@lnu.se",
   "password": "myVerySecretPassword"
 }
 ```
@@ -128,9 +125,7 @@ All requests and responses use `application/json` unless stated otherwise.
 | Code | Description                          |
 |------|--------------------------------------|
 | 201  | User logged in |
-| 400  | Bad request |
-| 401  | Missing or invalid API key           |
-| 409  | The nickname or email is already registered |
+| 401  | Wrong email or password |
 
 ---
 
@@ -158,7 +153,7 @@ All requests and responses use `application/json` unless stated otherwise.
 | Code | Description                          |
 |------|--------------------------------------|
 | 204  | The user has been successfully deleted and the refresh token set as expired        |
-| 401  | Missing or invalid refresh token, username and token do not match, or wrong password |
+| 401  | Missing or invalid refresh token, refresh token does not match the user to be deleted, or wrong password |
 
 ---
 
@@ -167,7 +162,7 @@ All requests and responses use `application/json` unless stated otherwise.
 Tokens returned in responses are JWTs signed by the server with assymetric private key.
 
 Access tokens include:
-  username
+  id,
   birthDate
 
 Token rotation and chaining is applied to refresh tokens. If a refresh token is re-used, any active referesh token in the same chain will be inactivated. Each new session has a separate refreshtoken-chain.
