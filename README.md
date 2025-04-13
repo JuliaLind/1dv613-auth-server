@@ -118,7 +118,7 @@ All requests and responses use `application/json` unless stated otherwise.
 | Code | Description                          |
 |------|--------------------------------------|
 | 204  | The user has been successfully deleted and all the refresh tokens are set as expired        |
-| 401  | Missing or invalid refresh token, refresh token does not match the user to be deleted, or wrong password |
+| 401  | Wrong email or password|
 
 ---
 
