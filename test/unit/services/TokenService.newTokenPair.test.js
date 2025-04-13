@@ -12,7 +12,7 @@ const expect = chai.expect
 
 describe('TokenService.newTokenPair', () => {
   const user = {
-    username: 'julia'
+    email: 'julia@lnu.se'
   }
 
   const jti = '456'

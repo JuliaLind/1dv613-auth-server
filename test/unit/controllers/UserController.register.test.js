@@ -1,4 +1,4 @@
-/* global afterEach */
+/* global before afterEach */
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
@@ -9,17 +9,19 @@ import { UserController } from '../../../src/controllers/UserController.js'
 const expect = chai.expect
 
 describe('UserController.register', () => {
+  before(() => {
+    UserModel.deleteMany()
+  })
+
   afterEach(() => {
     sinon.restore()
   })
 
-  const username = 'julia'
   const email = 'julia@myemail.com'
   const birthDate = '1989-02-24'
   const password = 'mypassword'
 
   const body = {
-    username,
     email,
     birthDate,
     password
@@ -28,7 +30,6 @@ describe('UserController.register', () => {
   const id = '123'
 
   const user = {
-    username,
     email,
     birthDate,
     _id: {
@@ -90,8 +91,8 @@ describe('UserController.register', () => {
   it('not ok, validation error', async () => {
     const error = new Error('Validation error')
     error.errors = {
-      username: {
-        message: 'Username is required'
+      email: {
+        message: 'Email is required'
       }
     }
     sinon.stub(UserModel, 'create').rejects(error)

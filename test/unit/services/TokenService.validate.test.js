@@ -17,7 +17,7 @@ describe('TokenService.expire', () => {
 
   it('OK', async function () {
     const user = {
-      username: 'julia'
+      id: 'myid'
     }
     const jti = '456'
     const payload = {
@@ -27,7 +27,7 @@ describe('TokenService.expire', () => {
 
     const tokenService = new TokenService()
     tokenService.decodeRefreshToken = sinon.stub().resolves(payload)
-    const res = await tokenService.validate('token', user.username)
+    const res = await tokenService.validate('token', user.id)
     expect(res).to.equal(jti)
   })
 

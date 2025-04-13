@@ -32,7 +32,7 @@ export class UserController {
    */
   #createHtmlError (error) {
     if (error.code === 11000) {
-      return createError(409, 'The username and/or email address is already registered')
+      return createError(409, 'The email address is already registered')
     }
 
     if (error.errors) {
@@ -52,16 +52,14 @@ export class UserController {
   async register (req, res, next) {
     try {
       const {
-        username,
-        password,
         email,
+        password,
         birthDate
       } = req.body
 
       const userDetails = {
-        username,
-        password,
         email,
+        password,
         birthDate
       }
 
@@ -130,11 +128,11 @@ export class UserController {
    * @param {Function} next - Express next middleware function.
    */
   async login (req, res, next) {
-    const { username, password } = req.body
+    const { email, password } = req.body
 
     try {
       // authenticate, will throw error if user does not exist or invalid password
-      const user = await UserModel.authenticate(username, password)
+      const user = await UserModel.authenticate(email, password)
 
       const result = await this.#tokenService.newTokenPair(user)
 
@@ -153,16 +151,19 @@ export class UserController {
    * @param {Function} next - Express next middleware function.
    */
   async delete (req, res, next) {
-    const { username, password } = req.body
+    const { email, password } = req.body
 
     try {
       const refreshToken = this.#extractToken(req)
-      const jti = await this.#tokenService.validate(refreshToken, username)
-      await UserModel.delete(username, password)
-      await this.#tokenService.expire(jti)
+      const user = await UserModel.authenticate(email, password)
+      await this.#tokenService.validate(refreshToken, user._id.toString())
+
+      await this.#tokenService.expireByUser(user._id.toString())
+      await user.deleteOne()
 
       res.status(204).end()
     } catch (error) {
+      console.log('DELETE ERROR:', error)
       next(error)
     }
   }

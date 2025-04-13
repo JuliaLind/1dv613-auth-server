@@ -14,11 +14,11 @@ describe('UserController.login', () => {
     sinon.restore()
   })
 
-  const username = 'julia'
+  const email = 'julia@lnu.com'
   const password = 'mypassword'
 
   const user = {
-    username
+    email
   }
 
   const tokens = {
@@ -30,7 +30,7 @@ describe('UserController.login', () => {
 
   it('Ok', async () => {
     const body = {
-      username,
+      email,
       password
     }
 
@@ -55,13 +55,13 @@ describe('UserController.login', () => {
     expect(res.status).to.have.been.calledWith(201)
     expect(res.json).to.have.been.calledWith(tokens)
     expect(next).not.to.have.been.called
-    expect(UserModel.authenticate).to.have.been.calledWith(username, password)
+    expect(UserModel.authenticate).to.have.been.calledWith(email, password)
     expect(tokenService.newTokenPair).to.have.been.calledWith(user)
   })
 
-  it('not ok, faied authentication', async () => {
+  it('not ok, failed authentication', async () => {
     const body = {
-      username,
+      email,
       password
     }
 

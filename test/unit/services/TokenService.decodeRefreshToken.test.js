@@ -14,7 +14,7 @@ const expect = chai.expect
 
 describe('TokenService.decodeRefreshToken', () => {
   const user = {
-    username: 'julia'
+    email: 'julia@lnu.se'
   }
 
   const jti = '456'
@@ -39,7 +39,7 @@ describe('TokenService.decodeRefreshToken', () => {
 
     const decoded = await tokenService.decodeRefreshToken(refreshToken)
 
-    expect(decoded.user.username).to.equal(user.username)
+    expect(decoded.user.email).to.equal(user.email)
     expect(decoded).to.have.property('jti', jti)
     expect(JwtService.decodeWithoutVerify).to.not.have.been.called
     expect(RefreshTokenModel.expireById).to.not.have.been.called

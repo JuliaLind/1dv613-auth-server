@@ -17,12 +17,12 @@ describe('TokenService.expire', () => {
   })
 
   it('OK', async function () {
-    sinon.stub(RefreshTokenModel, 'expireById').resolves()
+    sinon.stub(RefreshTokenModel, 'expireByUser').resolves()
     const tokenService = new TokenService()
-    const jti = '456'
-    await tokenService.expire(jti)
+    const userId = '456'
+    await tokenService.expireByUser(userId)
 
-    expect(RefreshTokenModel.expireById).to.have.been.calledOnce
-    expect(RefreshTokenModel.expireById).to.have.been.calledWith(jti)
+    expect(RefreshTokenModel.expireByUser).to.have.been.calledOnce
+    expect(RefreshTokenModel.expireByUser).to.have.been.calledWith(userId)
   })
 })

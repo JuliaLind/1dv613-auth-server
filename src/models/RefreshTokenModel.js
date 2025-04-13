@@ -13,7 +13,12 @@ import createError from 'http-errors'
  */
 const schema = new mongoose.Schema({
   next: { type: mongoose.Schema.Types.ObjectId, ref: 'RefreshToken', default: null },
-  expired: { type: Boolean, default: false }
+  expired: { type: Boolean, default: false },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User is required.']
+  }
 },
 {
   timestamps: true,
@@ -26,10 +31,15 @@ const schema = new mongoose.Schema({
  * and returns the id of the document to be used as the jti
  * (JWT ID).
  *
+ * @param {string|object} userId - the user id or user object
  * @returns { string } - The id of the created document.
  */
-schema.statics.newJti = async function () {
-  const doc = await this.create({})
+schema.statics.newJti = async function (userId) {
+  const doc = await this.create({
+    next: null,
+    expired: false,
+    user: userId
+  })
 
   return doc._id.toString()
 }
@@ -74,6 +84,28 @@ schema.statics.authenticate = async function (tokenId) {
     throw createError(401, 'Token reuse is not allowed.')
   }
   return token
+}
+
+/**
+ * Expires all active refresh tokens for a user.
+ *
+ * @param {string|object} userId - the id of a user document
+ */
+schema.statics.expireByUser = async function (userId) {
+  const active = await this.find(
+    {
+      user: userId,
+      expired: false
+    }
+  )
+
+  const promises = []
+
+  for (const token of active) {
+    promises.push(token.expire())
+  }
+
+  await Promise.all(promises)
 }
 
 /**
