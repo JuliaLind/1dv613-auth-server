@@ -39,8 +39,6 @@ describe('UserController.delete', () => {
     const next = sinon.stub()
 
     const tokenService = new TokenService()
-    tokenService.validate = sinon.stub().resolves()
-
     const user = {
       _id: {
         /**
@@ -66,55 +64,6 @@ describe('UserController.delete', () => {
 
     expect(tokenService.expireByUser).to.have.been.calledWith('123')
     expect(user.deleteOne).to.have.been.calledOnce
-    expect(tokenService.validate).to.have.been.calledWith(refreshToken, '123')
-  })
-
-  it('Not ok, validation failed', async () => {
-    const req = {
-      headers: {
-        authorization: 'Bearer ' + refreshToken
-      },
-      body: {
-        email: 'julia@lnu.se',
-        password: 'mypassword'
-      }
-    }
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.stub(),
-      end: sinon.stub()
-    }
-    const next = sinon.stub()
-
-    const tokenService = new TokenService()
-    tokenService.validate = sinon.stub().throws(createError(401))
-
-    const user = {
-      _id: {
-        /**
-         * Returns the id of the user as a string.
-         *
-         * @returns {string} The id of the user.
-         */
-        toString: () => '123'
-      },
-      deleteOne: sinon.stub().resolves()
-    }
-    sinon.stub(UserModel, 'authenticate').resolves(user)
-
-    tokenService.expireByUser = sinon.stub().resolves()
-
-    const userController = new UserController(tokenService)
-
-    await userController.delete(req, res, next)
-
-    expect(next).to.have.been.calledWith(sinon.match({
-      statusCode: 401
-    }))
-    expect(res.status).to.not.have.been.called
-    expect(res.json).to.not.have.been.called
-
-    expect(tokenService.expireByUser).to.not.have.been.called
   })
 
   it('Not Ok, authentication failed', async () => {

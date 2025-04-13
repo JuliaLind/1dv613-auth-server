@@ -154,9 +154,7 @@ export class UserController {
     const { email, password } = req.body
 
     try {
-      const refreshToken = this.#extractToken(req)
       const user = await UserModel.authenticate(email, password)
-      await this.#tokenService.validate(refreshToken, user._id.toString())
 
       await this.#tokenService.expireByUser(user._id.toString())
       await user.deleteOne()

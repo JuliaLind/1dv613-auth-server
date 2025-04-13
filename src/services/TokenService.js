@@ -120,20 +120,4 @@ export class TokenService {
   async expireByUser (userId) {
     await RefreshTokenModel.expireByUser(userId)
   }
-
-  /**
-   * Validates that the refresh token is not expired and belongs to the user.
-   *
-   * @param {string} refreshToken - a JWT token
-   * @param {string} userId the id of the user
-   * @throws 401 error if the token is invalid
-   * @returns {Promise<string>} - the id of the refresh token
-   */
-  async validate (refreshToken, userId) {
-    const payload = await this.decodeRefreshToken(refreshToken)
-    if (payload.user.id !== userId) {
-      throw createError(401)
-    }
-    return payload.jti
-  }
 }

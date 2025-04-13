@@ -47,7 +47,7 @@ describe('scenario - delete route', () => {
 
       const res = await chai.request(app)
         .delete('/api/v1/')
-        .set('Authorization', `Bearer ${refreshToken}`)
+
         .send({
           email: credentials.email,
           password: credentials.password
@@ -64,7 +64,7 @@ describe('scenario - delete route', () => {
   })
 
   describe('Should not delete user', async () => {
-    it('Token ok, password not ok', async function () {
+    it('Password not ok', async function () {
       const data = await tokenService.newTokenPair(user)
       const tokens = data.tokens
       let refreshToken = tokens.refreshToken

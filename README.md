@@ -21,37 +21,6 @@ All requests and responses use `application/json` unless stated otherwise.
 | 404  | Not found        |
 | 500  | Server error |
 
----
-
-## POST /refresh
-
-**Description**: Refresh your access token using a valid refresh token.
-
-### Required Headers
-
-- `Authorization: Bearer <refresh-token>`
-
-### Request Body
-
-```json
-{}
-```
-
-### Response
-
-```json
-{
-  "accessToken": "<new-access-token>",
-  "refreshToken": "<new-refresh-token>"
-}
-```
-
-### Status Codes
-
-| Code | Description                          |
-|------|--------------------------------------|
-| 201  | Tokens successfully refreshed        |
-| 401  | Missing or invalid refresh token |
 
 ---
 
@@ -131,18 +100,14 @@ All requests and responses use `application/json` unless stated otherwise.
 
 ## DELETE /
 
-**Description**: Deletes a user.
-
-### Required Headers
-
-- `Authorization: Bearer <refresh-token>`
+**Description**: Deletes a user and expires all active refresh-tokens.
 
 
 ### Request Body
 
 ```json
 {
-  "username": "julia",
+  "username": "julia@email.com",
   "password": "myVerySecretPassword"
 }
 ```
@@ -152,8 +117,40 @@ All requests and responses use `application/json` unless stated otherwise.
 
 | Code | Description                          |
 |------|--------------------------------------|
-| 204  | The user has been successfully deleted and the refresh token set as expired        |
+| 204  | The user has been successfully deleted and all the refresh tokens are set as expired        |
 | 401  | Missing or invalid refresh token, refresh token does not match the user to be deleted, or wrong password |
+
+---
+
+## POST /refresh
+
+**Description**: Refresh your access token using a valid refresh token.
+
+### Required Headers
+
+- `Authorization: Bearer <refresh-token>`
+
+### Request Body
+
+```json
+{}
+```
+
+### Response
+
+```json
+{
+  "accessToken": "<new-access-token>",
+  "refreshToken": "<new-refresh-token>"
+}
+```
+
+### Status Codes
+
+| Code | Description                          |
+|------|--------------------------------------|
+| 201  | Tokens successfully refreshed        |
+| 401  | Missing or invalid refresh token |
 
 ---
 
