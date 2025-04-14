@@ -5,6 +5,7 @@ import chai from 'chai'
 import sinon from 'sinon'
 import bcrypt from 'bcrypt'
 import chaiAsPromised from 'chai-as-promised'
+import mongoose from 'mongoose'
 
 import { UserModel } from '../../../src/models/UserModel.js'
 
@@ -21,6 +22,7 @@ describe('UserModel', () => {
 
   afterEach(() => {
     sinon.restore()
+    UserModel.deleteMany()
   })
 
   beforeEach(() => {
@@ -116,6 +118,40 @@ describe('UserModel', () => {
       expect(obj).to.not.have.property('password')
       expect(obj).to.have.property('birthDate', '1989-02-24')
       expect(obj).to.have.property('id', user._id.toString())
+    })
+
+    describe('pre save', () => {
+      let bcryptStub
+      let insertOneStub
+      const passwordHash = 'hashedPassword'
+    
+      before(() => {
+        bcryptStub = sinon.stub(bcrypt, 'hash').resolves(passwordHash)
+        insertOneStub = sinon.stub(UserModel.collection, 'insertOne').resolves({ insertedId: '123' })
+      })
+    
+      after(() => {
+        bcryptStub.restore()
+        insertOneStub.restore()
+      })
+    
+      it('pre save hook should hash password with 10 saltrounds', async function () {
+        this.timeout(15000)
+    
+        const password = 'myPassword'
+        const expSaltRounds = 10
+
+        const user = await UserModel.create({
+          email: 'julia@email.com',
+          birthDate: '1989-02-24',
+          password,
+        })
+    
+        expect(bcryptStub).to.have.been.calledOnce
+        expect(bcryptStub.firstCall.args[0]).to.equal(password)
+        expect(bcryptStub.firstCall.args[1]).to.equal(expSaltRounds)
+        expect(user.password).to.equal(passwordHash)
+      })
     })
   })
 })
