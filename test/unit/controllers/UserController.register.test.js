@@ -140,5 +140,4 @@ describe('UserController.register', () => {
       sinon.match.instanceOf(Error).and(sinon.match.has('statusCode', 500))
     )
   })
-
 })
