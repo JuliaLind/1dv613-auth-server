@@ -1,4 +1,4 @@
-/* global afterEach before after */
+/* global afterEach */
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
