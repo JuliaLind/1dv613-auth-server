@@ -116,4 +116,29 @@ describe('UserController.register', () => {
       sinon.match.instanceOf(Error).and(sinon.match.has('statusCode', 400))
     )
   })
+
+  it('not ok, some other unknown error', async () => {
+    const error = new Error()
+    sinon.stub(UserModel, 'create').rejects(error)
+
+    const req = {
+      body
+    }
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    }
+    const next = sinon.stub()
+
+    const userController = new UserController()
+    await userController.register(req, res, next)
+    expect(res.status).not.to.have.been.called
+    expect(res.json).not.to.have.been.called
+
+    expect(UserModel.create).to.have.been.calledWith(body)
+    expect(next).to.have.been.calledWithMatch(
+      sinon.match.instanceOf(Error).and(sinon.match.has('statusCode', 500))
+    )
+  })
+
 })
