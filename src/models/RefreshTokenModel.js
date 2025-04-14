@@ -99,17 +99,12 @@ schema.statics.expireByUser = async function (userId) {
     }
   )
 
-  console.log(`Found ${active.length} active tokens.`)
-
   const promises = []
 
   for (const token of active) {
-    console.log(`Stubbing expire for token ${token._id}`)
     promises.push(token.expire())
   }
-  console.log('Waiting for all expire promises to resolve...')
   await Promise.all(promises)
-  console.log('All promises resolved.')
 }
 
 /**
