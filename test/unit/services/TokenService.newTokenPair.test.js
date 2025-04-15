@@ -23,7 +23,7 @@ describe('TokenService.newTokenPair', () => {
     sinon.restore()
   })
 
-  it('OK', async function () {
+  it('OK, should return pair of tokens (access token and refresh token) and the jti of the new refresh token', async function () {
     const accessToken = 'accessToken'
     const refreshToken = 'refreshToken'
 

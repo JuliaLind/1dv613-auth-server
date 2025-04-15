@@ -13,7 +13,7 @@ describe('JwtService.decode', () => {
     sinon.restore()
   })
 
-  it('should resolve with decoded payload when jwt.verify succeeds', async () => {
+  it('Should return decoded payload when jwt.verify succeeds', async () => {
     const decoded = {
       username: 'julia'
     }
@@ -26,7 +26,7 @@ describe('JwtService.decode', () => {
     expect(result).to.deep.equal(decoded)
   })
 
-  it('should reject with an error when jwt.verify fails', async () => {
+  it('Should throw an error when jwt.verify fails', async () => {
     const error = new Error('Verify error')
     sinon.stub(jwt, 'verify').callsFake((token, key, callbackFn) => {
       callbackFn(error, null)

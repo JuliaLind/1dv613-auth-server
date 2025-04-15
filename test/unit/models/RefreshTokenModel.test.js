@@ -71,6 +71,13 @@ describe('RefreshTokenModel', () => {
     expect(RefreshTokenModel.expireChain).to.have.been.calledWith(token)
   })
 
+  it('authenticate Not OK - the token document does not exist, should throw error.', async () => {
+    sinon.stub(RefreshTokenModel, 'findById').resolves(null)
+
+    await expect(RefreshTokenModel.authenticate('456')).to.be.rejectedWith('Token not found.')
+
+  })
+
   it('expireById OK - should work to expire a token by it\'s id', async () => {
     const token = {
       expired: false,
@@ -184,7 +191,7 @@ describe('RefreshTokenModel', () => {
     }))
   })
 
-  it('expire ok - the expired property should eb set to true when the expire instance method is called', async () => {
+  it('expire ok - the expired property should be set to true when the expire instance method is called', async () => {
     const doc = new RefreshTokenModel({
       next: null,
       expired: false,

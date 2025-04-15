@@ -32,7 +32,7 @@ describe('TokenService.decodeRefreshToken', () => {
     sinon.restore()
   })
 
-  it('Decode ok, not expired', async function () {
+  it('Decode ok - token not expired. ', async function () {
     sinon.stub(JwtService, 'decode').resolves(payload)
     sinon.stub(JwtService, 'decodeWithoutVerify')
     sinon.stub(RefreshTokenModel, 'expireById')
@@ -45,7 +45,7 @@ describe('TokenService.decodeRefreshToken', () => {
     expect(RefreshTokenModel.expireById).to.not.have.been.called
   })
 
-  it('Decode not ok, jwt expired (token expiration date)', async function () {
+  it('Decode not ok, jwt expired (token expiration date). jti document should get expired in the database. Error statuscode should be 401.', async function () {
     const error = new Error('jwt expired')
     error.name = 'TokenExpiredError'
 
@@ -64,7 +64,7 @@ describe('TokenService.decodeRefreshToken', () => {
     expect(RefreshTokenModel.expireById).to.have.been.calledWith(jti)
   })
 
-  it('Decode not ok, jwt missing or malformed', async function () {
+  it('Decode not ok, jwt missing or malformed. Error status code should be 401.', async function () {
     const error = new Error('invalid token')
 
     sinon.stub(JwtService, 'decode').throws(error)

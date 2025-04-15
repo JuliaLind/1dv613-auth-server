@@ -27,7 +27,7 @@ describe('TokenService.refresh', () => {
     jti: '456'
   }
 
-  it('Not Ok, refreshToken reuse', async function () {
+  it('Not Ok, refreshToken reuse. Error should have status code 401. New tokens should not be generated.', async function () {
     const tokenService = new TokenService()
     tokenService.decodeRefreshToken = sinon.stub().resolves(payload)
     tokenService.newTokenPair = sinon.stub()

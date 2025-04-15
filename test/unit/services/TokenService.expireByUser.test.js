@@ -11,12 +11,12 @@ import sinon from 'sinon'
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-describe('TokenService.expire', () => {
+describe('TokenService.expireByUser', () => {
   afterEach(() => {
     sinon.restore()
   })
 
-  it('OK', async function () {
+  it('OK - should call the RefreshTokenModel.expireByUser method', async function () {
     sinon.stub(RefreshTokenModel, 'expireByUser').resolves()
     const tokenService = new TokenService()
     const userId = '456'

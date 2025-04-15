@@ -13,7 +13,7 @@ describe('JwtService.encode', () => {
     sinon.restore()
   })
 
-  it('should resolve with a token when jwt.sign succeeds', async () => {
+  it('Should resolve with a token when jwt.sign succeeds', async () => {
     const token = 'thisisavalidjwttoken'
     const payload = {
       username: 'julia'
@@ -31,7 +31,7 @@ describe('JwtService.encode', () => {
     expect(jwtSign).to.have.been.calledOnce
   })
 
-  it('should reject with an error when jwt.sign fails', async () => {
+  it('Should throw an error when jwt.sign fails', async () => {
     const error = new Error('Sign error')
     sinon.stub(jwt, 'sign').callsFake((payload, secret, options, callback) => {
       callback(error, null)
