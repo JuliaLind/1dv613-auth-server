@@ -39,7 +39,6 @@ describe('RefreshTokenModel', () => {
       next: null
     }))
     expect(jti).to.equal('123')
-
   })
 
   it('authenticate OK - when refresh token document is found and is not expired the document should be returned.', async () => {
@@ -63,10 +62,10 @@ describe('RefreshTokenModel', () => {
     sinon.stub(RefreshTokenModel, 'findById').resolves(token)
 
     await expect(RefreshTokenModel.authenticate('456')).to.be.rejected
-    .then(err => {
-      expect(err).to.have.property('status', 401)
-    })
-  
+      .then(err => {
+        expect(err).to.have.property('status', 401)
+      })
+
     expect(RefreshTokenModel.expireChain).to.have.been.calledOnce
     expect(RefreshTokenModel.expireChain).to.have.been.calledWith(token)
   })
@@ -75,7 +74,6 @@ describe('RefreshTokenModel', () => {
     sinon.stub(RefreshTokenModel, 'findById').resolves(null)
 
     await expect(RefreshTokenModel.authenticate('456')).to.be.rejectedWith('Token not found.')
-
   })
 
   it('expireById OK - should work to expire a token by it\'s id', async () => {

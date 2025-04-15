@@ -66,19 +66,19 @@ describe('UserController.refresh', () => {
       reason: ' Authorization header is present but undefined',
       header: {
         authorization: undefined
-      },
+      }
     },
     {
       reason: ' Authorization header is present but null',
       header: {
         authorization: null
-      },
+      }
     },
     {
       reason: ' Authorization header is present but token is missing',
-      header:{
+      header: {
         authorization: 'Bearer '
-      },
+      }
     },
     {
       reason: ' Authorization header is present but value is empty string',
