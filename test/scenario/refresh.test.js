@@ -125,7 +125,7 @@ describe('scenario - refresh route', () => {
   })
 
   describe('Token not ok', async () => {
-    it('Reused token should expire own chain', async function () {
+    it('Reused token should expire own chain. Tokens from different session/chain should not be expired. Should not return new tokens.', async function () {
       const data = await tokenService.newTokenPair(user)
       const ses1TokenId = data.jti
 
@@ -189,7 +189,7 @@ describe('scenario - refresh route', () => {
       expect(ses3doc).to.have.property('expired', false)
     })
 
-    it('Invalid token header', async function () {
+    it('Invalid token header - should not return new tokens. Status code should be 401.', async function () {
       const data = await tokenService.newTokenPair(user)
       const refreshToken = data.tokens.refreshToken
 

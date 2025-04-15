@@ -51,7 +51,7 @@ describe('TokenService.refresh', () => {
     expect(tokenService.newTokenPair).to.not.have.been.called
   })
 
-  it('Ok', async function () {
+  it('Ok - new tokenpair should be generated. Old token should be chained to new token.', async function () {
     const tokenService = new TokenService()
     tokenService.decodeRefreshToken = sinon.stub().resolves(payload)
 

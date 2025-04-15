@@ -56,23 +56,13 @@ describe('scenario - register route', () => {
     })
   })
 
-  describe('Should not be able to register same user twice', async () => {
-    const badCredentials = [
-      {
-        issue: 'Email is already registered',
-        credentials
-      }
-    ]
-    for (const { issue, credentials } of badCredentials) {
-      it('should not be able to register same user twice - ' + issue, async () => {
-        const res = await chai.request(app)
-          .post('/api/v1/register')
-          .send(credentials)
+  it('should not be able to register same user twice - email already registered', async () => {
+    const res = await chai.request(app)
+      .post('/api/v1/register')
+      .send(credentials)
 
-        expect(res).to.have.status(409)
-        expect(res.body).to.have.property('message', 'The email address is already registered')
-      })
-    }
+    expect(res).to.have.status(409)
+    expect(res.body).to.have.property('message', 'The email address is already registered')
   })
 
   describe('Credentials not ok', async () => {

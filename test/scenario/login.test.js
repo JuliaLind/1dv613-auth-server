@@ -90,7 +90,7 @@ describe('scenario - login route', () => {
     })
   })
 
-  describe('Credentials not ok', async () => {
+  describe('Credentials not ok, should not receive tokens', async () => {
     const badCredentials = [
       {
         issue: 'wrong password',
