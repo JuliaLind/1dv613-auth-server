@@ -13,7 +13,7 @@ describe('JwtService.decodeWithoutVerify', () => {
     sinon.restore()
   })
 
-  it('should return decoded payload from jwt.decode', async () => {
+  it('Should return decoded payload from jwt.decode', async () => {
     const decoded = {
       username: 'julia'
     }
