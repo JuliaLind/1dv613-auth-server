@@ -16,7 +16,7 @@ describe('RefreshTokenModel', () => {
     sinon.restore()
   })
 
-  it('newJti', async () => {
+  it('newJti method should create a new document in the database', async () => {
     const refreshTokenDoc = {
       _id: {
         /**
@@ -30,12 +30,19 @@ describe('RefreshTokenModel', () => {
 
     sinon.stub(RefreshTokenModel, 'create').resolves(refreshTokenDoc)
 
-    const jti = await RefreshTokenModel.newJti()
-    expect(jti).to.equal('123')
+    const userId = new mongoose.Types.ObjectId()
+    const jti = await RefreshTokenModel.newJti(userId)
     expect(RefreshTokenModel.create).to.have.been.calledOnce
+    expect(RefreshTokenModel.create).to.have.been.calledWith(sinon.match({
+      user: userId,
+      expired: false,
+      next: null
+    }))
+    expect(jti).to.equal('123')
+
   })
 
-  it('authenticate OK', async () => {
+  it('authenticate OK - when refresh token document is found and is not expired the document should be returned.', async () => {
     sinon.stub(RefreshTokenModel, 'expireChain').resolves()
 
     const token = {
@@ -47,7 +54,7 @@ describe('RefreshTokenModel', () => {
     expect(res).to.equal(token)
   })
 
-  it('authenticate Not OK', async () => {
+  it('authenticate Not OK - the token document is expired, should throw error with status code 401. The token chain should get expired.', async () => {
     sinon.stub(RefreshTokenModel, 'expireChain').resolves()
 
     const token = {
@@ -55,11 +62,16 @@ describe('RefreshTokenModel', () => {
     }
     sinon.stub(RefreshTokenModel, 'findById').resolves(token)
 
-    await expect(RefreshTokenModel.authenticate('456')).to.be.rejectedWith('Token reuse is not allowed.')
+    await expect(RefreshTokenModel.authenticate('456')).to.be.rejected
+    .then(err => {
+      expect(err).to.have.property('status', 401)
+    })
+  
     expect(RefreshTokenModel.expireChain).to.have.been.calledOnce
+    expect(RefreshTokenModel.expireChain).to.have.been.calledWith(token)
   })
 
-  it('expireById OK', async () => {
+  it('expireById OK - should work to expire a token by it\'s id', async () => {
     const token = {
       expired: false,
       save: sinon.stub().resolves()
@@ -71,7 +83,7 @@ describe('RefreshTokenModel', () => {
     expect(token.save).to.have.been.calledOnce
   })
 
-  it('expireChain OK', async () => {
+  it('expireChain OK - should expire a chain of three tokens', async () => {
     const token3 = {
       _id: {
         /**
@@ -116,7 +128,7 @@ describe('RefreshTokenModel', () => {
     expect(token3.expire).to.have.been.calledOnce
   })
 
-  it('chain ok', async () => {
+  it('chain ok - token should get expired when it is chained to a new token.', async () => {
     const doc = new RefreshTokenModel({
       next: null,
       expired: false
@@ -133,7 +145,7 @@ describe('RefreshTokenModel', () => {
     expect(doc.save).to.have.been.calledOnce
   })
 
-  it('expireByUser Ok', async () => {
+  it('expireByUser Ok - should expire all active refresh tokens of a user.', async () => {
     const userId = new mongoose.Types.ObjectId()
     const doc1 = new RefreshTokenModel({
       user: userId,
@@ -172,7 +184,7 @@ describe('RefreshTokenModel', () => {
     }))
   })
 
-  it('expire ok', async () => {
+  it('expire ok - the expired property should eb set to true when the expire instance method is called', async () => {
     const doc = new RefreshTokenModel({
       next: null,
       expired: false,

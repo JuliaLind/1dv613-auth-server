@@ -42,7 +42,7 @@ describe('UserController.register', () => {
     }
   }
 
-  it('Ok', async () => {
+  it('Ok, new user account should be created when valid user details are provided and the email is not previously registered. Status code should be 201.', async () => {
     sinon.stub(UserModel, 'create').resolves(user)
 
     const req = {
@@ -63,7 +63,7 @@ describe('UserController.register', () => {
     expect(UserModel.create).to.have.been.calledWith(body)
   })
 
-  it('not ok, duplicate key error', async () => {
+  it('Not ok, an account is already registered with same email. Status code should be 409.', async () => {
     const error = new Error('Duplicate key error')
     error.code = 11000
     sinon.stub(UserModel, 'create').rejects(error)
@@ -88,7 +88,7 @@ describe('UserController.register', () => {
     )
   })
 
-  it('not ok, validation error', async () => {
+  it('Not ok, validation error - status code should be 400.', async () => {
     const error = new Error('Validation error')
     error.errors = {
       email: {
@@ -117,7 +117,7 @@ describe('UserController.register', () => {
     )
   })
 
-  it('not ok, some other unknown error', async () => {
+  it('Not ok, some other unknown error - status code should be 500.', async () => {
     const error = new Error()
     sinon.stub(UserModel, 'create').rejects(error)
 

@@ -38,7 +38,7 @@ describe('UserModel', () => {
     })
   })
 
-  it('authenticate OK', async () => {
+  it('authenticate OK - the user object is returned when the password matched the hash', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
     const res = await UserModel.authenticate(user.email, user.password)
@@ -48,7 +48,7 @@ describe('UserModel', () => {
     })
   })
 
-  it('authenticate Not Ok, missing password', async () => {
+  it('authenticate Not Ok, missing password. Should throw error with status code 401.', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
     expect(UserModel.authenticate(user.email, undefined)).to.be.rejected.then(err => {
@@ -57,7 +57,7 @@ describe('UserModel', () => {
     })
   })
 
-  it('authenticate Not Ok, user not found', async () => {
+  it('authenticate Not Ok, user not found. Should throw error with status code 401.', async () => {
     sinon.stub(UserModel, 'findOne').resolves(null)
 
     await expect(UserModel.authenticate(user.email, user.password)).to.be.rejected
@@ -67,7 +67,7 @@ describe('UserModel', () => {
       })
   })
 
-  it('authenticate Not Ok, wrong password', async () => {
+  it('authenticate Not Ok, wrong password. Should throw error with status code 401.', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
     await expect(UserModel.authenticate(user.email, 'wrong password')).to.be.rejected
@@ -77,8 +77,23 @@ describe('UserModel', () => {
       })
   })
 
-  describe('Create new account, not ok', () => {
-    it('not yet 18', async () => {
+  it('The object returned by toObject method should not contain email or password. Should contain id and birth date.', async () => {
+    const user = new UserModel({
+      email: 'julia@mye@mail.com',
+      birthDate: '1989-02-24',
+      password: 'mypassword'
+    })
+
+    const obj = user.toObject()
+
+    expect(obj).to.not.have.property('email')
+    expect(obj).to.not.have.property('password')
+    expect(obj).to.have.property('birthDate', '1989-02-24')
+    expect(obj).to.have.property('id', user._id.toString())
+  })
+
+  describe('Create new account', () => {
+    it('Not ok,  validation should fail - user not yet 18', async () => {
       const birthDate = new Date()
       birthDate.setFullYear(birthDate.getFullYear() - 17)
 
@@ -91,7 +106,7 @@ describe('UserModel', () => {
       await expect(user.validate()).to.be.rejectedWith('You must be at least 18 years old.')
     })
 
-    it('Invalid email', async () => {
+    it('Not ok, validation should fail - Invalid email', async () => {
       const birthDate = new Date()
       birthDate.setFullYear(birthDate.getFullYear() - 18)
 
@@ -102,21 +117,6 @@ describe('UserModel', () => {
       })
 
       await expect(user.validate()).to.be.rejectedWith('Email must be a valid email address.')
-    })
-
-    it('toObject', async () => {
-      const user = new UserModel({
-        email: 'julia@mye@mail.com',
-        birthDate: '1989-02-24',
-        password: 'mypassword'
-      })
-
-      const obj = user.toObject()
-
-      expect(obj).to.not.have.property('email')
-      expect(obj).to.not.have.property('password')
-      expect(obj).to.have.property('birthDate', '1989-02-24')
-      expect(obj).to.have.property('id', user._id.toString())
     })
 
     it('pre save hook should hash password with 10 saltrounds', async function () {

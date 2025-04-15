@@ -77,7 +77,7 @@ schema.methods.chain = async function (newTokenId) {
 schema.statics.authenticate = async function (tokenId) {
   const token = await this.findById(tokenId)
 
-  if (token.expired) {
+  if (!token || token.expired) {
     // expire all tokens created from the expired refresh token
     await this.expireChain(token)
 
