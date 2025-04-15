@@ -21,7 +21,9 @@ describe('UserController.delete', () => {
 
   const refreshToken = 'myRefreshToken'
 
-  it('Ok', async () => {
+  it(`Ok, User should be deleted when authentication passes.
+    Status code should be 204.
+    All active refreshtokens should be deactivated`, async () => {
     const req = {
       headers: {
         authorization: 'Bearer ' + refreshToken
@@ -66,7 +68,7 @@ describe('UserController.delete', () => {
     expect(user.deleteOne).to.have.been.calledOnce
   })
 
-  it('Not Ok, authentication failed', async () => {
+  it('Not Ok, User should not be deleted when authentication fails. Active refresh tokens of user should not be deactivated. Status should be 401.', async () => {
     const req = {
       headers: {
         authorization: 'Bearer ' + refreshToken

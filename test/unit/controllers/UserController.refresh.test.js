@@ -34,7 +34,8 @@ describe('UserController.refresh', () => {
       newAccessToken
     }
 
-    it('Ok', async () => {
+    it(`Ok. When refreshtoken is valid a new token pair should be returned.
+      Status code should be 201`, async () => {
       const req = {
         headers: header
       }
@@ -57,33 +58,54 @@ describe('UserController.refresh', () => {
   }
 
   const invalidHeaders = [
-    {},
     {
-      authorization: undefined
+      reason: ' Authorization header is missing',
+      header: {}
     },
     {
-      authorization: null
+      reason: ' Authorization header is present but undefined',
+      header: {
+        authorization: undefined
+      },
     },
     {
-      authorization: 'Bearer '
+      reason: ' Authorization header is present but null',
+      header: {
+        authorization: null
+      },
     },
     {
-      authorization: ''
+      reason: ' Authorization header is present but token is missing',
+      header:{
+        authorization: 'Bearer '
+      },
     },
     {
-      'X-jwt-token': 'Bearer ' + refreshToken
+      reason: ' Authorization header is present but value is empty string',
+      header: {
+        authorization: ''
+      }
     },
     {
-      authorization: 'notbearer ' + refreshToken
+      reason: 'Token is valid but header name is wrong',
+      header: {
+        'X-jwt-token': 'Bearer ' + refreshToken
+      }
+    },
+    {
+      reason: 'Token is valid but not perceeded with correct "bearer" keyword',
+      header: {
+        authorization: 'notbearer ' + refreshToken
+      }
     }
   ]
 
   for (const header of invalidHeaders) {
-    it('not ok, wrong header format', async () => {
+    it(`Not ok, ${header.reason}  - should not return new tokens, status code should be 401.`, async () => {
       const tokenService = new TokenService()
 
       const req = {
-        headers: header
+        headers: header.header
       }
       const res = {
         status: sinon.stub().returnsThis(),
@@ -104,7 +126,7 @@ describe('UserController.refresh', () => {
     })
   }
 
-  it('not ok, refresh token expired', async () => {
+  it('Not ok, refresh token expired - new tokens should not be returned. Status code should be 401.', async () => {
     const tokenService = new TokenService()
     const error = createError(401, 'Token is invalid or expired.')
     tokenService.refresh = sinon.stub().rejects(error)

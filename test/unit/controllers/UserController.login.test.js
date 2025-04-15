@@ -28,7 +28,7 @@ describe('UserController.login', () => {
 
   const jti = '123'
 
-  it('Ok', async () => {
+  it('Ok, user should receive new tokens when authentication succeeds. Status code should be 201.', async () => {
     const body = {
       email,
       password
@@ -59,7 +59,7 @@ describe('UserController.login', () => {
     expect(tokenService.newTokenPair).to.have.been.calledWith(user)
   })
 
-  it('not ok, failed authentication', async () => {
+  it('Not ok, user should not receive new tokens if authentication fails. Next should be called with an error.', async () => {
     const body = {
       email,
       password
