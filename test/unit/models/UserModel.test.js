@@ -21,7 +21,6 @@ describe('UserModel', () => {
 
   afterEach(() => {
     sinon.restore()
-    UserModel.deleteMany()
   })
 
   beforeEach(() => {

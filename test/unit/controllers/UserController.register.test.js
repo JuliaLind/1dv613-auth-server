@@ -9,10 +9,6 @@ import { UserController } from '../../../src/controllers/UserController.js'
 const expect = chai.expect
 
 describe('UserController.register', () => {
-  before(() => {
-    UserModel.deleteMany()
-  })
-
   afterEach(() => {
     sinon.restore()
   })

@@ -11,10 +11,6 @@ import createError from 'http-errors'
 const expect = chai.expect
 
 describe('UserController.delete', () => {
-  before(() => {
-    UserModel.deleteMany()
-  })
-
   afterEach(() => {
     sinon.restore()
   })
