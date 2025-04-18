@@ -4,11 +4,9 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import bcrypt from 'bcrypt'
-import chaiAsPromised from 'chai-as-promised'
 
 import { UserModel } from '../../../src/models/UserModel.js'
 
-chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('UserModel', () => {

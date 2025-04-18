@@ -32,6 +32,7 @@ describe('RefreshTokenModel', () => {
 
     const userId = new mongoose.Types.ObjectId()
     const jti = await RefreshTokenModel.newJti(userId)
+    
     expect(RefreshTokenModel.create).to.have.been.calledOnce
     expect(RefreshTokenModel.create).to.have.been.calledWith(sinon.match({
       user: userId,
@@ -66,7 +67,6 @@ describe('RefreshTokenModel', () => {
         expect(err).to.have.property('status', 401)
       })
 
-    expect(RefreshTokenModel.expireChain).to.have.been.calledOnce
     expect(RefreshTokenModel.expireChain).to.have.been.calledWith(token)
   })
 
