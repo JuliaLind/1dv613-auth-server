@@ -1,4 +1,4 @@
-/* global before afterEach */
+/* global afterEach */
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
@@ -50,8 +50,6 @@ describe('UserController.delete', () => {
     }
     sinon.stub(UserModel, 'authenticate').resolves(user)
 
-    tokenService.expireByUser = sinon.stub().resolves()
-
     const userController = new UserController(tokenService)
 
     await userController.delete(req, res, next)
@@ -79,11 +77,10 @@ describe('UserController.delete', () => {
       end: sinon.stub()
     }
     const next = sinon.stub()
-
     const tokenService = new TokenService()
-    tokenService.validate = sinon.stub().resolves('123')
+
     sinon.stub(UserModel, 'authenticate').throws(createError(401, 'Credentials invalid or not provided.'))
-    tokenService.expire = sinon.stub().resolves()
+    sinon.stub(tokenService, 'expire').resolves()
 
     const userController = new UserController(tokenService)
 

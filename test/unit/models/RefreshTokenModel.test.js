@@ -32,8 +32,8 @@ describe('RefreshTokenModel', () => {
 
     const userId = new mongoose.Types.ObjectId()
     const jti = await RefreshTokenModel.newJti(userId)
-    
-    expect(RefreshTokenModel.create).to.have.been.calledOnce
+
+    expect(RefreshTokenModel.create).to.have.been.calledOnce // ensure only one document is created
     expect(RefreshTokenModel.create).to.have.been.calledWith(sinon.match({
       user: userId,
       expired: false,
@@ -88,7 +88,7 @@ describe('RefreshTokenModel', () => {
     sinon.stub(RefreshTokenModel, 'findById').returns({
       populate: sinon.stub().resolves(null)
     })
-  
+
     await expect(RefreshTokenModel.authenticate('456')).to.be.rejectedWith('Token not found.')
   })
 

@@ -1,8 +1,8 @@
 /* global after before afterEach */
 
 import chai from 'chai'
-import chaiHttp from 'chai-http'
 import fs from 'fs/promises'
+import chaiHttp from 'chai-http' // must have for chai.request
 
 import { app } from '../../src/server.js'
 import { UserModel } from '../../src/models/UserModel.js'
@@ -12,7 +12,7 @@ import { JwtService } from '../../src/services/JwtService.js'
 process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
 const expect = chai.expect
-chai.use(chaiHttp)
+chai.use(chaiHttp) // must have for chai.request
 
 describe('scenario - login route', () => {
   const credentials = {
@@ -21,11 +21,7 @@ describe('scenario - login route', () => {
     birthDate: '1989-02-24'
   }
 
-  const user = {
-    ...credentials
-  }
-  delete user.password
-  delete user.email
+  const user = {} // will contain user id (and age but age is not relevant for these tests)
 
   before(async () => {
     const res = await UserModel.create(credentials)

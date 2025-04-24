@@ -21,9 +21,6 @@ describe('TokenService.refresh', () => {
   const refreshToken = 'someRefreshToken'
 
   const payload = {
-    user: {
-      username: 'julia'
-    },
     jti: '456'
   }
 

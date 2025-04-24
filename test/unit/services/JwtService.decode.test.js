@@ -15,7 +15,7 @@ describe('JwtService.decode', () => {
 
   it('Should return decoded payload when jwt.verify succeeds', async () => {
     const decoded = {
-      username: 'julia'
+      id: 'h839fj3jg4309'
     }
 
     sinon.stub(jwt, 'verify').callsFake((token, key, callbackFn) => {

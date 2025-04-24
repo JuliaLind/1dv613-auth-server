@@ -13,19 +13,13 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('TokenService.decodeRefreshToken', () => {
-  const user = {
-    email: 'julia@lnu.se'
-  }
-
   const jti = '456'
 
   const payload = {
-    user,
     jti
   }
 
   const refreshToken = 'refreshToken'
-
   const tokenService = new TokenService()
 
   afterEach(() => {
@@ -39,7 +33,6 @@ describe('TokenService.decodeRefreshToken', () => {
 
     const decoded = await tokenService.decodeRefreshToken(refreshToken)
 
-    expect(decoded.user.email).to.equal(user.email)
     expect(decoded).to.have.property('jti', jti)
     expect(JwtService.decodeWithoutVerify).to.not.have.been.called
     expect(RefreshTokenModel.expireById).to.not.have.been.called

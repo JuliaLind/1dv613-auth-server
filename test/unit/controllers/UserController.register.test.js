@@ -1,4 +1,4 @@
-/* global before afterEach */
+/* global afterEach */
 /* eslint-disable no-unused-expressions */
 
 import chai from 'chai'
@@ -52,6 +52,7 @@ describe('UserController.register', () => {
 
     const userController = new UserController()
     await userController.register(req, res, next)
+
     expect(res.status).to.have.been.calledWith(201)
     expect(res.json).to.have.been.calledWith({ id })
 
@@ -75,6 +76,7 @@ describe('UserController.register', () => {
 
     const userController = new UserController()
     await userController.register(req, res, next)
+
     expect(res.status).not.to.have.been.called
     expect(res.json).not.to.have.been.called
 
@@ -104,6 +106,7 @@ describe('UserController.register', () => {
 
     const userController = new UserController()
     await userController.register(req, res, next)
+
     expect(res.status).not.to.have.been.called
     expect(res.json).not.to.have.been.called
 
@@ -128,6 +131,7 @@ describe('UserController.register', () => {
 
     const userController = new UserController()
     await userController.register(req, res, next)
+
     expect(res.status).not.to.have.been.called
     expect(res.json).not.to.have.been.called
 

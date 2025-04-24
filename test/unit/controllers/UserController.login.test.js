@@ -17,9 +17,7 @@ describe('UserController.login', () => {
   const email = 'julia@lnu.com'
   const password = 'mypassword'
 
-  const user = {
-    email
-  }
+  const user = {}
 
   const tokens = {
     accessToken: 'myAccessToken',

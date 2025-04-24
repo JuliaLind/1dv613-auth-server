@@ -1,7 +1,7 @@
 /* global after beforeEach afterEach */
 
 import chai from 'chai'
-import chaiHttp from 'chai-http'
+import chaiHttp from 'chai-http' // must have for chai.request
 import fs from 'fs/promises'
 
 import { app, connection, server } from '../../src/server.js'
@@ -11,7 +11,7 @@ import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
 process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
 const expect = chai.expect
-chai.use(chaiHttp)
+chai.use(chaiHttp) // must have for chai.request
 
 describe('scenario - register route', () => {
   const credentials = {
@@ -19,21 +19,6 @@ describe('scenario - register route', () => {
     email: 'julia_initial@student.lnu.se',
     birthDate: '1989-02-24'
   }
-
-  const user = {
-    ...credentials
-  }
-  delete user.password
-  delete user.email
-
-  before(async () => {
-    await UserModel.deleteMany({})
-  })
-
-  beforeEach(async () => {
-    const res = await UserModel.create(credentials)
-    user.id = res._id.toString()
-  })
 
   after(async () => {
     await connection.disconnect()
@@ -46,6 +31,13 @@ describe('scenario - register route', () => {
   })
 
   describe('Credentials ok', async () => {
+    const user = {}
+
+    beforeEach(async () => {
+      const res = await UserModel.create(credentials)
+      user.id = res._id.toString()
+    })
+
     it('Should be able to register a new user', async function () {
       const credentials = {
         password: '5up3rs3cr3tp@55w0rd',
@@ -59,15 +51,15 @@ describe('scenario - register route', () => {
       expect(res).to.have.status(201)
       expect(res.body).to.have.property('id').to.be.a('string')
     })
-  })
 
-  it('should not be able to register same user twice - email already registered', async () => {
-    const res = await chai.request(app)
-      .post('/api/v1/register')
-      .send(credentials)
+    it('should not be able to register same user twice - email already registered', async () => {
+      const res = await chai.request(app)
+        .post('/api/v1/register')
+        .send(credentials)
 
-    expect(res).to.have.status(409)
-    expect(res.body).to.have.property('message', 'The email address is already registered')
+      expect(res).to.have.status(409)
+      expect(res.body).to.have.property('message', 'The email address is already registered')
+    })
   })
 
   describe('Credentials not ok', async () => {

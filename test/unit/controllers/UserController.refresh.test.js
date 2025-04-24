@@ -142,7 +142,9 @@ describe('UserController.refresh', () => {
     }
     const next = sinon.stub()
     const userController = new UserController(tokenService)
+
     await userController.refresh(req, res, next)
+
     expect(res.status).not.to.have.been.called
     expect(res.json).not.to.have.been.called
     expect(next).to.have.been.calledWithMatch(
