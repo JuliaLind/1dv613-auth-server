@@ -9,7 +9,6 @@ import { UserModel } from '../../src/models/UserModel.js'
 import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
 import { JwtService } from '../../src/services/JwtService.js'
 import { TokenService } from '../../src/services/TokenService.js'
-import { id } from 'date-fns/locale'
 
 process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 

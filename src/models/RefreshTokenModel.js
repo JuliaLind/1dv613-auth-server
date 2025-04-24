@@ -7,8 +7,6 @@
 
 import mongoose from 'mongoose'
 import createError from 'http-errors'
-import { getAge } from '../helpers/functions.js'
-
 
 /**
  * Creates a schema for the RefreshToken model.
@@ -69,7 +67,6 @@ schema.methods.chain = async function (newTokenId) {
   this.expired = true
   await this.save()
 }
-
 
 /**
  * Authenticates a token, and returns the token document.

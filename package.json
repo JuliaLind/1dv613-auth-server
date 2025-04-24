@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "test": "dotenv -e .env.test c8 --reporter=text mocha 'test/**/*.test.js' --exit || exit 0",
+    "test": "npm run test:unit && npm run test:scen",
     "test:unit": "dotenv -e .env.test c8 --reporter=text mocha 'test/unit/**/*.test.js' --exit || exit 0",
     "test:scen": "dotenv -e .env.test c8 --reporter=text mocha 'test/scenario/*.test.js' --exit || exit 0",
     "start": "node src/server.js",
