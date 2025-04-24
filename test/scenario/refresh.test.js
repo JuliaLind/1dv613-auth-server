@@ -1,8 +1,8 @@
 /* global after before afterEach */
 
 import chai from 'chai'
-import chaiHttp from 'chai-http'
 import fs from 'fs/promises'
+import chaiHttp from 'chai-http' // must have for chai.request
 
 import { app } from '../../src/server.js'
 import { UserModel } from '../../src/models/UserModel.js'
@@ -14,7 +14,7 @@ import { id } from 'date-fns/locale'
 process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
 const expect = chai.expect
-chai.use(chaiHttp)
+chai.use(chaiHttp) // must have for chai.request
 
 describe('scenario - refresh route', () => {
   const credentials = {
@@ -22,11 +22,7 @@ describe('scenario - refresh route', () => {
     email: 'julia_initial@student.lnu.se',
     birthDate: '1989-02-24'
   }
-  const user = {
-    ...credentials
-  }
-  delete user.password
-  delete user.email
+  const user = {} // will contain user id (and age but age is not relevant for these tests)
 
   before(async () => {
     const res = await UserModel.create(credentials)
@@ -35,7 +31,6 @@ describe('scenario - refresh route', () => {
 
   after(async () => {
     await UserModel.deleteMany({})
-    await RefreshTokenModel.deleteMany({})
   })
 
   afterEach(async () => {
@@ -65,21 +60,21 @@ describe('scenario - refresh route', () => {
       expect(res.body).to.have.property('refreshToken')
 
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
+      // ensure refreshed access token does not contain any additional user data
       expect(accessPayload.user.id).to.equal(user.id)
       expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user).to.not.have.property('birthDate')
       expect(accessPayload.user.age).to.be.a('number')
 
-
       const newRefreshTokenPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
       expect(newRefreshTokenPayload).to.not.have.property('user')
-
       expect(newRefreshTokenPayload.jti).to.not.equal(jti)
 
       const docNew = await RefreshTokenModel.findById(newRefreshTokenPayload.jti)
       expect(docNew).to.have.property('next', null)
       expect(docNew).to.have.property('expired', false)
 
+      // check that old token is expired and chained to the new token
       const docOld = await RefreshTokenModel.findById(jti)
       expect(docOld.next.toString()).to.equal(newRefreshTokenPayload.jti)
       expect(docOld).to.have.property('expired', true)
@@ -118,11 +113,13 @@ describe('scenario - refresh route', () => {
 
       const tokens = await RefreshTokenModel.find()
       for (const token of tokens) {
+        // the latest token should not be expired
         if (token._id.toString() === payload.jti) {
           expect(token).to.have.property('next', null)
           expect(token).to.have.property('expired', false)
           continue
         }
+        // the previous tokens should be expired and chained
         expect(token.next.toString.length).to.be.greaterThan(0)
         expect(token).to.have.property('expired', true)
       }
@@ -200,7 +197,7 @@ describe('scenario - refresh route', () => {
 
       const res = await chai.request(app)
         .post('/api/v1/refresh')
-        .set('Authorization', `Bear ${refreshToken}`)
+        .set('Authorization', `Bear ${refreshToken}`) // correct is Bearer not Bear
         .send()
 
       expect(res).to.have.status(401)

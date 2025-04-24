@@ -16,13 +16,13 @@ describe('JwtService.encode', () => {
   it('Should resolve with a token when jwt.sign succeeds', async () => {
     const token = 'thisisavalidjwttoken'
     const payload = {
-      username: 'julia'
+      id: 'fb3uivndjknfuei'
     }
     const secret = 'myjwtsecret'
     const expiresIn = '1h'
 
     const jwtSign = sinon.stub(jwt, 'sign').callsFake((payload, secret, options, callback) => {
-      callback(null, token)
+      callback(null, token) // return the mocked token when called with mocked payload
     })
 
     const result = await JwtService.encode(payload, secret, expiresIn)

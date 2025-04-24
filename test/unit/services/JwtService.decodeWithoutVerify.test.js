@@ -15,7 +15,7 @@ describe('JwtService.decodeWithoutVerify', () => {
 
   it('Should return decoded payload from jwt.decode', async () => {
     const decoded = {
-      username: 'julia'
+      id: 'jgrei934ut93jg0'
     }
 
     const decodeStub = sinon.stub(jwt, 'decode').resolves(decoded)

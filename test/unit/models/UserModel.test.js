@@ -4,7 +4,7 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import bcrypt from 'bcrypt'
-import {differenceInYears} from 'date-fns'
+import { differenceInYears } from 'date-fns'
 
 import { UserModel } from '../../../src/models/UserModel.js'
 import mongoose from 'mongoose'
@@ -150,12 +150,10 @@ describe('UserModel', () => {
       birthDate: '1989-02-24'
     })
 
-
     sinon.stub(RefreshTokenModel, 'expireByUser').resolves()
 
     // replace the actual db connection
-    const execStub = sinon.stub(UserModel.collection, 'deleteOne').callsFake(() => Promise.resolve({ deletedCount: 1 }))
-
+    sinon.stub(UserModel.collection, 'deleteOne').callsFake(() => Promise.resolve({ deletedCount: 1 }))
 
     await user.deleteOne()
 
