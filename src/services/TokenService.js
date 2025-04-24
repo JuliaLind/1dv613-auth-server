@@ -33,7 +33,6 @@ export class TokenService {
   async #newRefreshToken (user) {
     const jti = await RefreshTokenModel.newJti(user.id)
     const payload = {
-      user,
       jti
     }
     const refreshToken = await JwtService.encode(payload, process.env.REFRESH_TOKEN_KEY, process.env.REFRESH_TOKEN_LIFE, 'HS256')
@@ -95,8 +94,7 @@ export class TokenService {
     const payload = await this.decodeRefreshToken(oldRefreshToken)
 
     const oldTokenDoc = await RefreshTokenModel.authenticate(payload.jti)
-
-    const result = await this.newTokenPair(payload.user)
+    const result = await this.newTokenPair(oldTokenDoc.user)
 
     await oldTokenDoc.chain(result.jti)
 
@@ -110,14 +108,5 @@ export class TokenService {
    */
   async expire (jti) {
     await RefreshTokenModel.expireById(jti)
-  }
-
-  /**
-   * Expires the refresh token in the database.
-   *
-   * @param {string} userId - the id of the refresh token
-   */
-  async expireByUser (userId) {
-    await RefreshTokenModel.expireByUser(userId)
   }
 }

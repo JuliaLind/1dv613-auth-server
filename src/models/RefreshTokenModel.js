@@ -7,6 +7,8 @@
 
 import mongoose from 'mongoose'
 import createError from 'http-errors'
+import { getAge } from '../helpers/functions.js'
+
 
 /**
  * Creates a schema for the RefreshToken model.
@@ -68,6 +70,7 @@ schema.methods.chain = async function (newTokenId) {
   await this.save()
 }
 
+
 /**
  * Authenticates a token, and returns the token document.
  *
@@ -75,7 +78,7 @@ schema.methods.chain = async function (newTokenId) {
  * @returns {Promise<object>} - The token document.
  */
 schema.statics.authenticate = async function (tokenId) {
-  const token = await this.findById(tokenId)
+  const token = await this.findById(tokenId).populate('user', 'birthDate')
 
   if (!token) {
     throw createError(401, 'Token not found.')
@@ -86,6 +89,7 @@ schema.statics.authenticate = async function (tokenId) {
 
     throw createError(401, 'Token reuse is not allowed.')
   }
+
   return token
 }
 

@@ -9,6 +9,7 @@ import { UserModel } from '../../src/models/UserModel.js'
 import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
 import { JwtService } from '../../src/services/JwtService.js'
 import { TokenService } from '../../src/services/TokenService.js'
+import { id } from 'date-fns/locale'
 
 process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
@@ -45,8 +46,12 @@ describe('scenario - refresh route', () => {
 
   describe('Token ok', async () => {
     it('Should receive new access token and new refresh token', async function () {
-      const data = await tokenService.newTokenPair(user)
+      const data = await tokenService.newTokenPair({
+        id: user.id,
+        age: '57'
+      })
       const tokens = data.tokens
+
       const refreshToken = tokens.refreshToken
       const jti = data.jti
 
@@ -62,13 +67,13 @@ describe('scenario - refresh route', () => {
       const accessPayload = await JwtService.decode(res.body.accessToken, process.env.ACCESS_TOKEN_PUBLIC_KEY)
       expect(accessPayload.user.id).to.equal(user.id)
       expect(accessPayload.user).to.not.have.property('email')
-      expect(accessPayload.user.birthDate).to.equal(user.birthDate)
+      expect(accessPayload.user).to.not.have.property('birthDate')
+      expect(accessPayload.user.age).to.be.a('number')
+
 
       const newRefreshTokenPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
-      expect(newRefreshTokenPayload.user.id).to.equal(user.id)
-      expect(newRefreshTokenPayload.user.birthDate).to.equal(user.birthDate)
+      expect(newRefreshTokenPayload).to.not.have.property('user')
 
-      expect(newRefreshTokenPayload.user).to.not.have.property('email')
       expect(newRefreshTokenPayload.jti).to.not.equal(jti)
 
       const docNew = await RefreshTokenModel.findById(newRefreshTokenPayload.jti)
