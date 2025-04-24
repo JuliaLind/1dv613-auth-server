@@ -1,0 +1,6 @@
+{
+  "reporter": "text",
+  "include": ["src/**"],
+  "exclude": ["src/config/**"]
+}
+
