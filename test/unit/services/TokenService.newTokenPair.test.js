@@ -32,7 +32,6 @@ describe('TokenService.newTokenPair', () => {
     }
 
     const payloadRefreshToken = {
-      user,
       jti
     }
 

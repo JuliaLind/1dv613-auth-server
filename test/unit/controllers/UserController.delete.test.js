@@ -60,7 +60,6 @@ describe('UserController.delete', () => {
     expect(res.status).to.have.been.calledWith(204)
     expect(res.json).to.not.have.been.called
 
-    expect(tokenService.expireByUser).to.have.been.calledWith('123')
     expect(user.deleteOne).to.have.been.calledOnce
   })
 

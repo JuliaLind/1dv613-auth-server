@@ -54,13 +54,11 @@ describe('scenario - login route', () => {
       expect(accessPayload.user.id).to.equal(user.id)
       expect(accessPayload.user).to.not.have.property('email')
       expect(accessPayload.user).to.not.have.property('password')
-      expect(accessPayload.user.birthDate).to.equal(credentials.birthDate)
+      expect(accessPayload.user).to.not.have.property('birthDate')
+      expect(accessPayload.user.age).to.be.a('number')
 
       const refreshPayload = await JwtService.decode(res.body.refreshToken, process.env.REFRESH_TOKEN_KEY)
-      expect(refreshPayload.user.id).to.equal(user.id)
-      expect(refreshPayload.user.birthDate).to.equal(user.birthDate)
-      expect(refreshPayload.user).to.not.have.property('email')
-      expect(refreshPayload.user).to.not.have.property('password')
+      expect(refreshPayload).to.not.have.property('user')
       expect(refreshPayload).to.have.property('jti')
 
       const refreshToken = await RefreshTokenModel.findById(refreshPayload.jti)

@@ -4,8 +4,11 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import bcrypt from 'bcrypt'
+import {differenceInYears} from 'date-fns'
 
 import { UserModel } from '../../../src/models/UserModel.js'
+import mongoose from 'mongoose'
+import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 
 const expect = chai.expect
 
@@ -85,8 +88,10 @@ describe('UserModel', () => {
 
     expect(obj).to.not.have.property('email')
     expect(obj).to.not.have.property('password')
-    expect(obj).to.have.property('birthDate', '1989-02-24')
+    expect(obj).to.not.have.property('birthDate')
+
     expect(obj).to.have.property('id', user._id.toString())
+    expect(obj).to.have.property('age', differenceInYears(new Date(), user.birthDate))
   })
 
   describe('Create new account', () => {
@@ -134,5 +139,26 @@ describe('UserModel', () => {
       expect(bcryptStub.firstCall.args[1]).to.equal(expSaltRounds)
       expect(user.password).to.equal(passwordHash)
     })
+  })
+
+  it('pre deleteOne hook, should call RefreshTokenModel.expireByUser when a user is deleted', async () => {
+    const userId = new mongoose.Types.ObjectId()
+    const user = new UserModel({
+      _id: userId,
+      email: 'test@example.com',
+      password: 'StrongPass123',
+      birthDate: '1989-02-24'
+    })
+
+
+    sinon.stub(RefreshTokenModel, 'expireByUser').resolves()
+
+    // replace the actual db connection
+    const execStub = sinon.stub(UserModel.collection, 'deleteOne').callsFake(() => Promise.resolve({ deletedCount: 1 }))
+
+
+    await user.deleteOne()
+
+    expect(RefreshTokenModel.expireByUser).to.have.been.calledOnceWith(userId)
   })
 })

@@ -46,9 +46,16 @@ describe('RefreshTokenModel', () => {
     sinon.stub(RefreshTokenModel, 'expireChain').resolves()
 
     const token = {
-      expired: false
+      expired: false,
+      user: {
+        _id: new mongoose.Types.ObjectId(),
+        birthdate: new Date(1989, 2, 24)
+      }
     }
-    sinon.stub(RefreshTokenModel, 'findById').resolves(token)
+
+    sinon.stub(RefreshTokenModel, 'findById').returns({
+      populate: sinon.stub().resolves(token)
+    })
 
     const res = await RefreshTokenModel.authenticate('456')
     expect(res).to.equal(token)
@@ -58,9 +65,16 @@ describe('RefreshTokenModel', () => {
     sinon.stub(RefreshTokenModel, 'expireChain').resolves()
 
     const token = {
-      expired: true
+      expired: true,
+      user: {
+        _id: new mongoose.Types.ObjectId(),
+        birthdate: new Date(1989, 2, 24)
+      }
     }
-    sinon.stub(RefreshTokenModel, 'findById').resolves(token)
+
+    sinon.stub(RefreshTokenModel, 'findById').returns({
+      populate: sinon.stub().resolves(token)
+    })
 
     await expect(RefreshTokenModel.authenticate('456')).to.be.rejected
       .then(err => {
@@ -71,17 +85,26 @@ describe('RefreshTokenModel', () => {
   })
 
   it('authenticate Not OK - the token document does not exist, should throw error.', async () => {
-    sinon.stub(RefreshTokenModel, 'findById').resolves(null)
-
+    sinon.stub(RefreshTokenModel, 'findById').returns({
+      populate: sinon.stub().resolves(null)
+    })
+  
     await expect(RefreshTokenModel.authenticate('456')).to.be.rejectedWith('Token not found.')
   })
 
   it('expireById OK - should work to expire a token by it\'s id', async () => {
     const token = {
       expired: false,
+      user: {
+        _id: new mongoose.Types.ObjectId(),
+        birthdate: new Date(1989, 2, 24)
+      },
       save: sinon.stub().resolves()
     }
-    sinon.stub(RefreshTokenModel, 'findById').resolves(token)
+
+    sinon.stub(RefreshTokenModel, 'findById').returns({
+      populate: sinon.stub().resolves(token)
+    })
 
     await RefreshTokenModel.expireById('456')
     expect(token.expired).to.be.true

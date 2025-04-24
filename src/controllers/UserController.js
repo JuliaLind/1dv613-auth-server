@@ -156,7 +156,6 @@ export class UserController {
     try {
       const user = await UserModel.authenticate(email, password)
 
-      await this.#tokenService.expireByUser(user._id.toString())
       await user.deleteOne()
 
       res.status(204).end()

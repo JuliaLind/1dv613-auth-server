@@ -9,7 +9,8 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import createError from 'http-errors'
 import validator from 'validator'
-import { differenceInYears, formatDate } from 'date-fns'
+import { getAge } from '../helpers/functions.js'
+import { RefreshTokenModel } from './RefreshTokenModel.js'
 
 // Restrictions
 
@@ -31,7 +32,9 @@ const convertOptions = Object.freeze({
    */
   transform: (doc, ret) => {
     ret.id = ret._id.toString()
-    ret.birthDate = formatDate(ret.birthDate, 'yyyy-MM-dd')
+    ret.age = getAge(ret.birthDate)
+
+    delete ret.birthDate
     delete ret._id
     delete ret.password
     delete ret.email
@@ -58,7 +61,7 @@ const schema = new mongoose.Schema(
       validate: [validator.isEmail, 'Email must be a valid email address.']
     },
     birthDate: {
-      type: Date,
+      type: String,
       required: [true, 'Birth date is required.'],
       validate: {
         /**
@@ -68,8 +71,7 @@ const schema = new mongoose.Schema(
          * @returns {boolean} - true if the user is at least 18 years old, false otherwise
          */
         validator: function (value) {
-          const age = differenceInYears(new Date(), value)
-          return age >= 18
+          return getAge(value) >= 18
         },
         message: 'You must be at least 18 years old.'
       }
@@ -119,6 +121,10 @@ schema.statics.authenticate = async function (email, password) {
 
   return user
 }
+
+schema.pre('deleteOne', { document: true, query: false }, async function () {
+  await RefreshTokenModel.expireByUser(this._id)
+})
 
 // Create a model using the schema.
 export const UserModel = mongoose.model('User', schema)

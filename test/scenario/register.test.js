@@ -26,6 +26,10 @@ describe('scenario - register route', () => {
   delete user.password
   delete user.email
 
+  before(async () => {
+    await UserModel.deleteMany({})
+  })
+
   beforeEach(async () => {
     const res = await UserModel.create(credentials)
     user.id = res._id.toString()
@@ -51,6 +55,7 @@ describe('scenario - register route', () => {
       const res = await chai.request(app)
         .post('/api/v1/register')
         .send(credentials)
+
       expect(res).to.have.status(201)
       expect(res.body).to.have.property('id').to.be.a('string')
     })
