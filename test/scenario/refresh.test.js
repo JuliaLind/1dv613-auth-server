@@ -3,6 +3,7 @@
 import chai from 'chai'
 import fs from 'fs/promises'
 import chaiHttp from 'chai-http' // must have for chai.request
+import sinon from 'sinon'
 
 import { app } from '../../src/server.js'
 import { UserModel } from '../../src/models/UserModel.js'
@@ -203,6 +204,33 @@ describe('scenario - refresh route', () => {
       expect(res.body).to.have.property('message', 'Invalid authorization header format.')
       expect(res.body).to.not.have.property('accessToken')
       expect(res.body).to.not.have.property('refreshToken')
+    })
+  
+    it('Token is expired - should not return new tokens. Status code should be 401.', async function () {
+      const jti = await RefreshTokenModel.newJti(user.id)
+
+      const payload = {
+        jti,
+      }
+      sinon.stub(JwtService, 'decodeWithoutVerify').resolves(payload)
+
+      const tokenExpiredError = new Error('jwt expired')
+      tokenExpiredError.name = 'TokenExpiredError'
+      
+      sinon.stub(JwtService, 'decode').throws(tokenExpiredError)
+
+      const res = await chai.request(app)
+        .post('/api/v1/refresh')
+        .set('Authorization', 'Bearer myexpiredtoken')
+        .send()
+
+      expect(res).to.have.status(401)
+      expect(res.body).to.have.property('message', 'jwt expired')
+      expect(res.body).to.not.have.property('accessToken')
+      expect(res.body).to.not.have.property('refreshToken')
+      const doc = await RefreshTokenModel.findById(jti)
+      expect(doc).to.have.property('expired', true)
+      expect(doc).to.have.property('next', null)
     })
   })
 })
