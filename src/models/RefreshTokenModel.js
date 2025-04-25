@@ -69,6 +69,32 @@ schema.methods.chain = async function (newTokenId) {
 }
 
 /**
+ * Throws error if the document was not found.
+ *
+ * @param {object} token - the token document
+ */
+function isFound(token) {
+  if (!token) {
+    throw createError(401, 'Token not found.')
+  }
+}
+
+/**
+ * Throws an error if the token is already expired and
+ * expires all tokens created from the expired token.
+ *
+ * @param {object} token - the token document
+ */
+schema.statics.isExpired = async function (token) {
+  if (token.expired) {
+    // expire all tokens created from the expired refresh token
+    await this.expireChain(token)
+
+    throw createError(401, 'Token reuse is not allowed.')
+  }
+}
+
+/**
  * Authenticates a token, and returns the token document.
  *
  * @param {string} tokenId - The id of the token document.
@@ -77,16 +103,8 @@ schema.methods.chain = async function (newTokenId) {
 schema.statics.authenticate = async function (tokenId) {
   const token = await this.findById(tokenId).populate('user', 'birthDate')
 
-  if (!token) {
-    throw createError(401, 'Token not found.')
-  }
-
-  if (token.expired) {
-    // expire all tokens created from the expired refresh token
-    await this.expireChain(token)
-
-    throw createError(401, 'Token reuse is not allowed.')
-  }
+  isFound(token)
+  await this.isExpired(token)
 
   return token
 }
