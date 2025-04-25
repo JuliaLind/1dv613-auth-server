@@ -205,18 +205,18 @@ describe('scenario - refresh route', () => {
       expect(res.body).to.not.have.property('accessToken')
       expect(res.body).to.not.have.property('refreshToken')
     })
-  
+
     it('Token is expired - should not return new tokens. Status code should be 401.', async function () {
       const jti = await RefreshTokenModel.newJti(user.id)
 
       const payload = {
-        jti,
+        jti
       }
       sinon.stub(JwtService, 'decodeWithoutVerify').resolves(payload)
 
       const tokenExpiredError = new Error('jwt expired')
       tokenExpiredError.name = 'TokenExpiredError'
-      
+
       sinon.stub(JwtService, 'decode').throws(tokenExpiredError)
 
       const res = await chai.request(app)

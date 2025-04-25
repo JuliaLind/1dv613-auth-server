@@ -73,7 +73,7 @@ schema.methods.chain = async function (newTokenId) {
  *
  * @param {object} token - the token document
  */
-function isFound(token) {
+function isFound (token) {
   if (!token) {
     throw createError(401, 'Token not found.')
   }

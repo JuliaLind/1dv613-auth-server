@@ -83,6 +83,7 @@ export class TokenService {
    * Handles the error thrown when decoding the token.
    *
    * @param {Error} error - the error thrown when decoding the token
+   * @param {object} token - the token document
    */
   async #handleTokenError (error, token) {
     if (error.name === 'TokenExpiredError') {
