@@ -103,6 +103,30 @@ function throwWrongCredentialsError () {
 }
 
 /**
+ * Throws an error if any of the mandatory fields is missing.
+ *
+ * @param {string} email - email of the user
+ * @param {string} password - password of the user
+ */
+function checkMandatoryFields (email, password) {
+  if (!email || !password) {
+    throwWrongCredentialsError()
+  }
+}
+
+/**
+ * Verifies that the user exists and that the password is correct.
+ *
+ * @param {object} user - the user document from the database 
+ * @param {string} password - the password to be verified
+ */
+async function verify(user, password) {
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    throwWrongCredentialsError()
+  }
+}
+
+/**
  * Authenticates a user by comparing the passed password to the stored password hash.
  *
  * @param {string} email - The email of the user.
@@ -110,14 +134,11 @@ function throwWrongCredentialsError () {
  * @returns {string[]} a jwt token and the refresh token.
  */
 schema.statics.authenticate = async function (email, password) {
-  if (!email || !password) {
-    throwWrongCredentialsError()
-  }
+  checkMandatoryFields(email, password)
+
   const user = await this.findOne({ email })
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throwWrongCredentialsError()
-  }
+  await verify(user, password)
 
   return user
 }
