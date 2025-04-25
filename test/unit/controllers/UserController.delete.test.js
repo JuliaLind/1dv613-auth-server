@@ -6,6 +6,7 @@ import sinon from 'sinon'
 import { TokenService } from '../../../src/services/TokenService.js'
 import { UserController } from '../../../src/controllers/UserController.js'
 import { UserModel } from '../../../src/models/UserModel.js'
+import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 import createError from 'http-errors'
 
 const expect = chai.expect
@@ -80,7 +81,7 @@ describe('UserController.delete', () => {
     const tokenService = new TokenService()
 
     sinon.stub(UserModel, 'authenticate').throws(createError(401, 'Credentials invalid or not provided.'))
-    sinon.stub(tokenService, 'expire').resolves()
+    sinon.stub(RefreshTokenModel, 'expireById').resolves()
 
     const userController = new UserController(tokenService)
 
@@ -92,6 +93,6 @@ describe('UserController.delete', () => {
     }))
     expect(res.status).to.not.have.been.called
     expect(res.json).to.not.have.been.called
-    expect(tokenService.expire).to.not.have.been.called
+    expect(RefreshTokenModel.expireById).to.not.have.been.called
   })
 })

@@ -34,10 +34,10 @@ const convertOptions = Object.freeze({
     ret.id = ret._id.toString()
     ret.age = getAge(ret.birthDate)
 
-    delete ret.birthDate
-    delete ret._id
-    delete ret.password
-    delete ret.email
+    for (const field of ['birthDate', '_id', 'password', 'email']) {
+      delete ret[field]
+    }
+
     return ret
   }
 })

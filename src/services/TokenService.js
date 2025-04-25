@@ -71,17 +71,25 @@ export class TokenService {
    * @returns {object} - the payload of the jwt token
    */
   async decodeRefreshToken (oldRefreshToken) {
-    let payload
     try {
-      payload = await JwtService.decode(oldRefreshToken, process.env.REFRESH_TOKEN_KEY)
+      const payload = await JwtService.decode(oldRefreshToken, process.env.REFRESH_TOKEN_KEY)
       return payload
     } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        payload = await JwtService.decodeWithoutVerify(oldRefreshToken)
-        await this.expire(payload.jti)
-      }
-      throw createError(401, error.message)
+      return await this.#handleTokenError(error, oldRefreshToken)
     }
+  }
+
+  /**
+   * Handles the error thrown when decoding the token.
+   *
+   * @param {Error} error - the error thrown when decoding the token
+   */
+  async #handleTokenError (error, token) {
+    if (error.name === 'TokenExpiredError') {
+      const payload = await JwtService.decodeWithoutVerify(token)
+      await RefreshTokenModel.expireById(payload.jti)
+    }
+    throw createError(401, error.message)
   }
 
   /**
@@ -99,14 +107,5 @@ export class TokenService {
     await oldTokenDoc.chain(result.jti)
 
     return result.tokens
-  }
-
-  /**
-   * Expires the refresh token in the database.
-   *
-   * @param {string} jti - the id of the refresh token
-   */
-  async expire (jti) {
-    await RefreshTokenModel.expireById(jti)
   }
 }
