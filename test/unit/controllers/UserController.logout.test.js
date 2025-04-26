@@ -6,7 +6,6 @@ import sinon from 'sinon'
 import { TokenService } from '../../../src/services/TokenService.js'
 import { UserController } from '../../../src/controllers/UserController.js'
 import createError from 'http-errors'
-import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 
 const expect = chai.expect
 
@@ -15,8 +14,7 @@ describe('UserController.logout', () => {
     sinon.restore()
   })
 
-
-  it(`Not ok, token reuse, status code should be 401.`, async () => {
+  it('Not ok, token reuse, status code should be 401.', async () => {
     const tokenService = new TokenService()
 
     const req = {
@@ -28,7 +26,7 @@ describe('UserController.logout', () => {
       status: sinon.stub().returnsThis(),
       json: sinon.stub()
     }
-    const next = sinon.stub() 
+    const next = sinon.stub()
 
     const err = createError(401, 'Token reuse is not allowed.')
     sinon.stub(tokenService, 'expire').throws(err)

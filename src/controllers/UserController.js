@@ -172,14 +172,14 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-    async logout (req, res, next) {
-      try {
-        const refreshToken = this.#extractToken(req)
-        await this.#tokenService.expire(refreshToken)
+  async logout (req, res, next) {
+    try {
+      const refreshToken = this.#extractToken(req)
+      await this.#tokenService.expire(refreshToken)
 
-        res.status(204).end()
-      } catch (error) {
-        next(error)
-      }
+      res.status(204).end()
+    } catch (error) {
+      next(error)
     }
+  }
 }

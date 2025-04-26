@@ -3,12 +3,10 @@
 import chai from 'chai'
 import fs from 'fs/promises'
 import chaiHttp from 'chai-http' // must have for chai.request
-import sinon from 'sinon'
 
 import { app } from '../../src/server.js'
 import { UserModel } from '../../src/models/UserModel.js'
 import { RefreshTokenModel } from '../../src/models/RefreshTokenModel.js'
-import { JwtService } from '../../src/services/JwtService.js'
 import { TokenService } from '../../src/services/TokenService.js'
 
 process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
@@ -87,5 +85,4 @@ describe('scenario - logout route', () => {
     expect(doc).to.have.property('next', null)
     expect(doc).to.have.property('expired', true) // should still be expired
   })
-
 })
