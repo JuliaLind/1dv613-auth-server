@@ -36,7 +36,6 @@ export function createApp () {
       return res
         .status(err.status)
         .json({
-          status_code: err.status,
           message: err.message
         })
     }
@@ -46,7 +45,6 @@ export function createApp () {
       return res
         .status(500)
         .json({
-          status_code: 500,
           message: 'An unexpected condition was encountered.'
         })
     }
@@ -56,7 +54,6 @@ export function createApp () {
     res
       .status(err.status || 500)
       .json({
-        status_code: err.status || 500,
         message: err.message,
         stack: err.stack
       })
