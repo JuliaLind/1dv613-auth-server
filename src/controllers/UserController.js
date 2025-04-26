@@ -163,4 +163,23 @@ export class UserController {
       next(error)
     }
   }
+
+  /**
+   * Expires the sent refresh token in the database. Note! Does not expire other sessions
+   * of same user.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+    async logout (req, res, next) {
+      try {
+        const refreshToken = this.#extractToken(req)
+        await this.#tokenService.expire(refreshToken)
+
+        res.status(204).end()
+      } catch (error) {
+        next(error)
+      }
+    }
 }
