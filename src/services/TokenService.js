@@ -109,4 +109,15 @@ export class TokenService {
 
     return result.tokens
   }
+
+  /**
+   * Expires the refresh token.
+   *
+   * @param {object} token - the jwt refresh token
+   */
+  async expire (token) {
+    // no need to verify, we are just expiring the token
+    const payload = await JwtService.decodeWithoutVerify(token)
+    await RefreshTokenModel.expireById(payload.jti)
+  }
 }

@@ -150,7 +150,40 @@ All requests and responses use `application/json` unless stated otherwise.
 | Code | Description                          |
 |------|--------------------------------------|
 | 201  | Tokens successfully refreshed        |
-| 401  | Missing or invalid refresh token |
+| 401  | Missing or invalid/reused refresh token |
+
+---
+
+
+## POST /logout
+
+**Description**: Log out by expiring the refresh token.
+
+### Required Headers
+
+- `Authorization: Bearer <refresh-token>`
+
+### Request Body
+
+```json
+{}
+```
+
+### Response
+
+```json
+{
+  "accessToken": "<new-access-token>",
+  "refreshToken": "<new-refresh-token>"
+}
+```
+
+### Status Codes
+
+| Code | Description                          |
+|------|--------------------------------------|
+| 204  | Refresh token successfully expired        |
+| 401  | Missing or invalid/reused refresh token |
 
 ---
 
@@ -160,6 +193,6 @@ Tokens returned in responses are JWTs signed by the server with assymetric priva
 
 Access tokens include:
   id,
-  birthDate
+  age
 
 Token rotation and chaining is applied to refresh tokens. If a refresh token is re-used, any active referesh token in the same chain will be inactivated. Each new session has a separate refreshtoken-chain.
