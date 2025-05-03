@@ -6,7 +6,7 @@
  */
 
 import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import createError from 'http-errors'
 import validator from 'validator'
 import { getAge } from '../helpers/functions.js'

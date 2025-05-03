@@ -3,7 +3,7 @@
 
 import chai from 'chai'
 import sinon from 'sinon'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { differenceInYears } from 'date-fns'
 
 import { UserModel } from '../../../src/models/UserModel.js'
