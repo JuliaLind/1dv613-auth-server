@@ -9,8 +9,8 @@
   "type": "module",
   "scripts": {
     "test": "npm run test:unit && npm run test:scen",
-    "test:unit": "dotenv -e .env.test c8 --reporter=text mocha 'test/unit/**/*.test.js' --exit || exit 0",
-    "test:scen": "dotenv -e .env.test c8 mocha 'test/scenario/*.test.js' --exit || exit 0",
+    "test:unit": "dotenv -e .env.test c8 --reporter=text mocha 'test/unit/**/*.test.js' --exit",
+    "test:scen": "dotenv -e .env.test c8 mocha 'test/scenario/*.test.js' --exit",
     "start": "node src/server.js",
     "dev": "nodemon --inspect --env-file=.env src/server.js",
     "lint": "npx eslint ./ || exit 0",
