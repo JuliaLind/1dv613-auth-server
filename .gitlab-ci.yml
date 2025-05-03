@@ -1,6 +1,7 @@
 stages:
   - lint
-  - test
+  - test:unit
+  - test:scen
 
 variables:
   NODE_ENV: test
@@ -20,14 +21,14 @@ lint:
     - npm run lint
 
 test:unit:
-  stage: test
+  stage: test:unit
   image: node:20
   script:
     - npm ci
     - npm run test:unit
 
 test:scen:
-  stage: test
+  stage: test:scen
   image: node:20
   services:
     - mongo:7.0.4
