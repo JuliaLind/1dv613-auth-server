@@ -1,0 +1,38 @@
+stages:
+  - lint
+  - test
+
+variables:
+  NODE_ENV: test
+  PORT: 8080
+  DB_CONNECTION_STRING: 'mongodb://mongo:27017/auth_test'
+  ACCESS_TOKEN_PRIVATE_KEY_PATH: './test_private.pem'
+  ACCESS_TOKEN_PUBLIC_KEY_PATH: './test_public.pem'
+  ACCESS_TOKEN_LIFE: '2h'
+  REFRESH_TOKEN_KEY: "$TEST_REFRESH_TOKEN_KEY"
+  REFRESH_TOKEN_LIFE: '2d'
+
+lint:
+  stage: lint
+  image: node:20
+  script:
+    - npm ci
+    - npm run lint
+
+test:unit:
+  stage: test
+  image: node:20
+  script:
+    - npm ci
+    - npm run test:unit
+
+test:scen:
+  stage: test
+  image: node:20
+  services:
+    - mongo:7.0.4
+  script:
+    - echo "$TEST_PRIVATE_PEM" > test_private.pem
+    - echo "$TEST_PUBLIC_PEM" > test_public.pem
+    - npm ci
+    - npm run test:scen

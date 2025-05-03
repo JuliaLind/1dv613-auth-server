@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  mongodb-auth:
+    image: mongo:7.0.4
+    restart: always
+    ports:
+      - 27019:27017
+    volumes:
+      - volume-mongo-auth:/data/db
+    networks:
+      - network-auth
+
+  auth-server:
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - mongodb-auth
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_CONNECTION_STRING: mongodb://mongodb-auth:27017/auth
+      ACCESS_TOKEN_PRIVATE_KEY_PATH: /private.pem
+      ACCESS_TOKEN_LIFE: 2h
+      REFRESH_TOKEN_KEY: 5f3b5c6c1e7d4f95a4d3f09c9b61e03f9b8b2146h4vd7k3c6a7d43214e6d1a3
+      REFRESH_TOKEN_LIFE: 2d
+    ports:
+      - 5053:3000
+    volumes:
+      - ./private.pem:/private.pem:ro
+    networks:
+      - network-auth
+
+volumes:
+  volume-mongo-auth:
+
+networks:
+  network-auth:
