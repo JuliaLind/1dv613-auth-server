@@ -28,7 +28,7 @@ services:
     ports:
       - 5053:3000
     volumes:
-      - ./private.pem:/private.pem:ro
+      - /home/ubuntu/app/auth-server/private.pem:/private.pem:ro
     networks:
       - network-auth
 
