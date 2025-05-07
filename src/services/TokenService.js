@@ -35,6 +35,7 @@ export class TokenService {
     const payload = {
       jti
     }
+    console.log('[DEBUG] Refresh key length:', process.env.REFRESH_TOKEN_KEY?.length)
     const refreshToken = await JwtService.encode(payload, process.env.REFRESH_TOKEN_KEY, process.env.REFRESH_TOKEN_LIFE, 'HS256')
 
     return [refreshToken, jti]
