@@ -20,7 +20,7 @@ try {
   app = createApp()
 
   // Starts the HTTP server listening for connections.
-  server = app.listen(process.env.PORT, () => {
+  server = app.listen(process.env.PORT, '0.0.0.0',() => {
     const address = server.address()
     const host = address.address === '::' ? 'localhost' : address.address
     const port = address.port
