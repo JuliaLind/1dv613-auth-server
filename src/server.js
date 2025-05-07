@@ -16,15 +16,10 @@ try {
   // Connect to MongoDB.
   connection = await connectDB(process.env.DB_CONNECTION_STRING)
   // process.env.ACCESS_TOKEN_PRIVATE_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PRIVATE_KEY_PATH, 'utf-8')
-
-  try {
-    const keyPath = process.env.ACCESS_TOKEN_PRIVATE_KEY_PATH
-    console.log('[DEBUG] Reading private key from:', keyPath)
-    process.env.ACCESS_TOKEN_PRIVATE_KEY = await fs.readFile(keyPath, 'utf-8')
-    console.log('[DEBUG] Private key length:', process.env.ACCESS_TOKEN_PRIVATE_KEY?.length)
-  } catch (err) {
-    console.error('[ERROR] Failed to load private key:', err)
-  }
+  process.env.ACCESS_TOKEN_PRIVATE_KEY = (await fs.readFile(
+    process.env.ACCESS_TOKEN_PRIVATE_KEY_PATH,
+    'utf-8'
+  )).replace(/\r/g, '')
 
   app = createApp()
 
