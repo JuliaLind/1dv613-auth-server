@@ -19,6 +19,7 @@ lint:
   script:
     - npm ci
     - npm run lint
+  when: always
 
 test:unit:
   stage: test:unit
@@ -26,6 +27,7 @@ test:unit:
   script:
     - npm ci
     - npm run test:unit
+  when: always
 
 test:scen:
   stage: test:scen
@@ -37,3 +39,4 @@ test:scen:
     - echo "$TEST_PUBLIC_PEM" > test_public.pem
     - npm ci
     - npm run test:scen
+  when: always

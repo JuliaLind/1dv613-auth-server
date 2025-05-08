@@ -30,7 +30,7 @@ export class UserController {
    * @param {Error} error - the error from the database.
    * @returns {Error} - the error to send in the response.
    */
-  #createHtmlError (error) {
+  #createHttpError (error) {
     if (error.code === 11000) {
       return createError(409, 'The email address is already registered')
     }
@@ -68,7 +68,7 @@ export class UserController {
 
       res.status(201).json({ id })
     } catch (error) {
-      next(this.#createHtmlError(error))
+      next(this.#createHttpError(error))
     }
   }
 
