@@ -78,7 +78,7 @@ deploy:
     DOCKER_HOST: ssh://ubuntu@$PRODUCTION_HOST
   script:
     - echo "Deploying using Docker over SSH to $PRODUCTION_HOST..."
-    - docker compose -f docker-compose.yaml up -d --build
+    - docker compose -f docker-compose.yml up -d --build
   only:
     - main
   needs:
