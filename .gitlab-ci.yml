@@ -27,7 +27,7 @@ stages:
   - lint
   - test:unit
   - test:scen
-  - push image
+  - push_image
   - deploy
 
 variables:
@@ -68,8 +68,8 @@ test:scen:
     - npm run test:scen
   when: always
 
-push image:
-  stage: push image
+push_image:
+  stage: push_image
   image:
     name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: ['']
@@ -100,6 +100,6 @@ deploy:
     - lint
     - test:unit
     - test:scen
-    - push image
+    - push_image
 
 
