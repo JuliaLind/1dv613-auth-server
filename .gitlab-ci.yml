@@ -1,7 +1,34 @@
+.before_script_ssh_setup: &before_script_ssh_setup
+  # Ensure ssh-agent is installed and started, essential for managing SSH keys.
+  # (Change apt-get to yum if using an RPM-based image)
+  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+
+  # Start the ssh-agent in the background.
+  - eval $(ssh-agent -s)
+
+  # Add the SSH private key stored in the SSH_PRIVATE_KEY variable to the ssh-agent.
+  # Using 'tr' to remove carriage return characters for compatibility with ed25519 keys.
+  # Reference: https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+  # Create the .ssh directory and set the correct permissions.
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+
+  # Use ssh-keyscan to add the remote server's SSH key to the known_hosts file.
+  # This prevents SSH from prompting for approval of the remote server's key.
+  - ssh-keyscan -H $PRODUCTION_HOST >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+# Specify the Docker image to be used for the jobs, which supports Docker commands.
+image: docker:27-cli
+
 stages:
   - lint
   - test:unit
   - test:scen
+  - push image
+  - deploy
 
 variables:
   NODE_ENV: test
@@ -40,3 +67,39 @@ test:scen:
     - npm ci
     - npm run test:scen
   when: always
+
+push image:
+  stage: push image
+  image:
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    entrypoint: ['']
+  script:
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/countryguessr:${CI_COMMIT_TAG:-latest}"
+  only:
+    - production
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+    url: http://$PRODUCTION_HOST
+  variables:
+    REMOTE_HOST: $PRODUCTION_HOST # Set the REMOTE_HOST variable for production.
+    DOCKER_HOST: ssh://ubuntu@$PRODUCTION_HOST # Docker connection via SSH.
+    REFRESH_TOKEN_KEY: $REFRESH_TOKEN_KEY ## stored in gitlab variables
+  before_script: *before_script_ssh_setup # Reuse SSH setup steps.
+  script:
+    - echo "Deploying to production..."
+    - docker compose -f docker-compose.yaml up --build -d
+  only:
+    - main # Only run this job on the main branch.
+  needs:
+    - lint
+    - test:unit
+    - test:scen
+    - push image
+
+
