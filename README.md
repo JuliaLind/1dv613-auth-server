@@ -98,7 +98,7 @@ All requests and responses use `application/json` unless stated otherwise.
 
 ---
 
-## DELETE /
+## DELETE /user
 
 **Description**: Deletes a user and expires all active refresh-tokens.
 

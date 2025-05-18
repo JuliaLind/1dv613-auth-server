@@ -143,8 +143,7 @@ export class UserController {
   }
 
   /**
-   * Checks the user credentials agains db
-   * and generates a new jwt token.
+   * Deletes a user from the database.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -152,6 +151,8 @@ export class UserController {
    */
   async delete (req, res, next) {
     const { email, password } = req.body
+      console.log('DELETE / called')
+      console.log('Body:', req.body)
 
     try {
       const user = await UserModel.authenticate(email, password)
