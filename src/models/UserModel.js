@@ -81,7 +81,8 @@ const schema = new mongoose.Schema(
     timestamps: true,
     toObject: convertOptions,
     toJSON: convertOptions,
-    optimisticConcurrency: false
+    optimisticConcurrency: false,
+    versionKey: false
   }
 )
 
