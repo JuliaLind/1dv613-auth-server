@@ -24,7 +24,7 @@ All requests and responses use `application/json` unless stated otherwise.
 
 ---
 
-## POST /register
+## POST /user
 
 **Description**: Register a new user account. All fields are required.
 

@@ -45,7 +45,7 @@ describe('scenario - register route', () => {
         birthDate: '1989-02-24'
       }
       const res = await chai.request(app)
-        .post('/api/v1/register')
+        .post('/api/v1/user')
         .send(credentials)
 
       expect(res).to.have.status(201)
@@ -54,7 +54,7 @@ describe('scenario - register route', () => {
 
     it('should not be able to register same user twice - email already registered', async () => {
       const res = await chai.request(app)
-        .post('/api/v1/register')
+        .post('/api/v1/user')
         .send(credentials)
 
       expect(res).to.have.status(409)
@@ -116,7 +116,7 @@ describe('scenario - register route', () => {
     for (const { issue, credentials } of badCredentials) {
       it(`not ok, ${issue}`, async function () {
         const res = await chai.request(app)
-          .post('/api/v1/register')
+          .post('/api/v1/user')
           .send(credentials)
 
         expect(res).to.have.status(400)
