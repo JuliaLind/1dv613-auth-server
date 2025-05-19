@@ -15,7 +15,6 @@ let app, connection, server
 try {
   // Connect to MongoDB.
   connection = await connectDB(process.env.DB_CONNECTION_STRING)
-  // process.env.ACCESS_TOKEN_PRIVATE_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PRIVATE_KEY_PATH, 'utf-8')
   process.env.ACCESS_TOKEN_PRIVATE_KEY = (await fs.readFile(
     process.env.ACCESS_TOKEN_PRIVATE_KEY_PATH,
     'utf-8'
