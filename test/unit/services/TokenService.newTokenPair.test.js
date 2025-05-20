@@ -3,10 +3,13 @@
 
 import chai from 'chai'
 import sinon from 'sinon'
+import fs from 'fs/promises'
 
 import { TokenService } from '../../../src/services/TokenService.js'
 import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 import { JwtService } from '../../../src/services/JwtService.js'
+
+process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN_PUBLIC_KEY_PATH, 'utf-8')
 
 const expect = chai.expect
 
@@ -53,5 +56,19 @@ describe('TokenService.newTokenPair', () => {
     expect(tokenPair).to.have.property('refreshToken', refreshToken)
     expect(result.jti).to.equal(jti)
     expect(RefreshTokenModel.newJti).to.have.been.calledOnce
+  })
+
+  it('Req 1.3.1 + 1.3.2 - accessToken should be valid 2h and refresh token 48h', async function () {
+    sinon.stub(RefreshTokenModel, 'newJti').resolves(jti)
+
+    sinon.stub(JwtService, 'encode')
+
+    await tokenService.newTokenPair(user)
+
+    const accessTokenExp = JwtService.encode.getCall(0).args[2]
+    const refreshTokenExp = JwtService.encode.getCall(1).args[2]
+
+    expect(accessTokenExp).to.equal('2h')
+    expect(refreshTokenExp).to.equal('2d')
   })
 })

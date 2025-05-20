@@ -11,7 +11,7 @@ import { RefreshTokenModel } from '../../../src/models/RefreshTokenModel.js'
 chai.use(sinonChai)
 const expect = chai.expect
 
-describe('RefreshTokenModel', () => {
+describe('RefreshTokenModel - Requirement 1.3.3', () => {
   afterEach(() => {
     sinon.restore()
   })
