@@ -16,7 +16,7 @@ process.env.ACCESS_TOKEN_PUBLIC_KEY = await fs.readFile(process.env.ACCESS_TOKEN
 const expect = chai.expect
 chai.use(chaiHttp) // must have for chai.request
 
-describe('zscenario - refresh route', () => {
+describe('scenario - refresh route', () => {
   const credentials = {
     password: '5up3rs3cr3tp@55w0rd',
     email: 'julia_initial@student.lnu.se',

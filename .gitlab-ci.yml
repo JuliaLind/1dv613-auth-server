@@ -53,6 +53,7 @@ test:unit:
   image: node:20
   script:
     - npm ci
+    - echo "$TEST_PRIVATE_PEM" > test_private.pem
     - npm run test:unit
   when: always
 
