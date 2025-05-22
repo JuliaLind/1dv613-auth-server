@@ -19,7 +19,7 @@
   },
   "keywords": [],
   "author": "Julia Lind <jl225vf@student.lnu.se>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@lnu/eslint-config": "^1.1.10",
     "c8": "^10.1.3",
