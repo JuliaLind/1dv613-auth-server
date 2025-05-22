@@ -52,8 +52,9 @@ test:unit:
   stage: test:unit
   image: node:20
   script:
-    - npm ci
     - echo "$TEST_PRIVATE_PEM" > test_private.pem
+    - echo "$TEST_PUBLIC_PEM" > test_public.pem
+    - npm ci
     - npm run test:unit
   when: always
 
