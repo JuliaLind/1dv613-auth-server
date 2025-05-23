@@ -151,8 +151,6 @@ export class UserController {
    */
   async delete (req, res, next) {
     const { email, password } = req.body
-    console.log('DELETE / called')
-    console.log('Body:', req.body)
 
     try {
       const user = await UserModel.authenticate(email, password)
