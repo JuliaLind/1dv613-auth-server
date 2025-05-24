@@ -56,12 +56,11 @@ jobs:
       REFRESH_TOKEN_KEY: ${{ secrets.TEST_REFRESH_TOKEN_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Wait for Mongo to be ready
+      - name: Wait for MongoDB to be ready
         run: |
-          until nc -z localhost 27017; do
-            echo "Waiting for MongoDB..."
-            sleep 2
-          done
+          curl -s https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > wait-for-it.sh
+          chmod +x wait-for-it.sh
+          ./wait-for-it.sh localhost:27017 --timeout=30
       - name: Write private key
         run: echo "${{ secrets.TEST_PRIVATE_PEM }}" > test_private.pem
       - name: Write public key
