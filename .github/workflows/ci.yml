@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+env:
+  NODE_ENV: test
+  PORT: 8080
+  DB_CONNECTION_STRING: mongodb://localhost:27017/auth_test
+  ACCESS_TOKEN_PRIVATE_KEY_PATH: ./test_private.pem
+  ACCESS_TOKEN_PUBLIC_KEY_PATH: ./test_public.pem
+  ACCESS_TOKEN_LIFE: 2h
+  REFRESH_TOKEN_LIFE: 2d
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run lint
+
+  test-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    env:
+      REFRESH_TOKEN_KEY: ${{ secrets.TEST_REFRESH_TOKEN_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write private key
+        run: echo "${{ secrets.TEST_PRIVATE_PEM }}" > test_private.pem
+      - name: Write public key
+        run: echo "${{ secrets.TEST_PUBLIC_PEM }}" > test_public.pem
+      - run: npm ci
+      - run: npm run test:unit
+
+  test-scen:
+    name: Scenario Tests
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7.0.4
+        ports:
+          - 27017:27017
+    container:
+      image: node:20
+    env:
+      REFRESH_TOKEN_KEY: ${{ secrets.TEST_REFRESH_TOKEN_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for Mongo to be ready
+        run: |
+          until nc -z localhost 27017; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+      - name: Write private key
+        run: echo "${{ secrets.TEST_PRIVATE_PEM }}" > test_private.pem
+      - name: Write public key
+        run: echo "${{ secrets.TEST_PUBLIC_PEM }}" > test_public.pem
+      - run: npm ci
+      - run: npm run test:scen

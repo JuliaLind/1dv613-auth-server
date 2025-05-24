@@ -27,7 +27,6 @@ stages:
   - lint
   - test:unit
   - test:scen
-  - push_image
   - deploy
 
 variables:
