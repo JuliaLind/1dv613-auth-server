@@ -53,6 +53,7 @@ jobs:
     container:
       image: node:20
     env:
+      DB_CONNECTION_STRING: mongodb://mongo:27017/auth_test
       REFRESH_TOKEN_KEY: ${{ secrets.TEST_REFRESH_TOKEN_KEY }}
     steps:
       - uses: actions/checkout@v4
