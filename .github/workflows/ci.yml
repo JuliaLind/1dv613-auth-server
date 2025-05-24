@@ -57,11 +57,12 @@ jobs:
       REFRESH_TOKEN_KEY: ${{ secrets.TEST_REFRESH_TOKEN_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Wait for MongoDB to be ready
-        run: |
-          curl -s https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > wait-for-it.sh
-          chmod +x wait-for-it.sh
-          ./wait-for-it.sh localhost:27017 --timeout=30
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: 7.0
+
       - name: Write private key
         run: echo "${{ secrets.TEST_PRIVATE_PEM }}" > test_private.pem
       - name: Write public key
