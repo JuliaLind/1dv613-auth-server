@@ -39,11 +39,9 @@ build:
           ACCESS_TOKEN_PUBLIC_KEY_PATH: ./test_public.pem
           ACCESS_TOKEN_LIFE: 2h
           REFRESH_TOKEN_LIFE: 2d
-        services:
-          mongodb:
-            version: 7
       tests:
         override:
+          - command: sudo service mongodb start
           - command: echo "$TEST_PRIVATE_PEM" > test_private.pem
           - command: echo "$TEST_PUBLIC_PEM" > test_public.pem
           - command: npm config set engine-strict false
