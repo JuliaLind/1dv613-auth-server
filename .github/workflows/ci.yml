@@ -90,6 +90,9 @@ jobs:
           ssh-keyscan -H ${{ secrets.PRODUCTION_HOST }} >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
+      - name: Export refresh token secret to ENV
+        run: echo "REFRESH_TOKEN_KEY=${{ secrets.REFRESH_TOKEN_KEY }}" >> $GITHUB_ENV
+
       - name: Set remote Docker host (via SSH)
         run: echo "DOCKER_HOST=ssh://root@${{ secrets.PRODUCTION_HOST }}" >> $GITHUB_ENV
 
