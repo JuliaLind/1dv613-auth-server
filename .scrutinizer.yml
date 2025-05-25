@@ -56,8 +56,5 @@ tools:
     config:
       use_project_config: true
 
-  javascript:
+  javascript_analyzer:
     enabled: true
-    code_rating: true
-    tests:
-      enabled: true
