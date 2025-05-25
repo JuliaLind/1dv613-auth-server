@@ -1,0 +1,60 @@
+build:
+  environment:
+    node: 18
+    variables:
+      NODE_ENV: test
+      PORT: 8080
+      DB_CONNECTION_STRING: mongodb://localhost:27017/auth
+      ACCESS_TOKEN_PRIVATE_KEY_PATH: ./test_private.pem
+      ACCESS_TOKEN_PUBLIC_KEY_PATH: ./test_public.pem
+      ACCESS_TOKEN_LIFE: 2h
+      REFRESH_TOKEN_LIFE: 2d
+
+  nodes:
+    lint:
+      tests:
+        override:
+          - command: npm ci
+          - command: npm run lint
+
+    unit-tests:
+      environment:
+        variables:
+          REFRESH_TOKEN_KEY: "$TEST_REFRESH_TOKEN_KEY"
+      tests:
+        override:
+          - command: echo "$TEST_PRIVATE_PEM" > test_private.pem
+          - command: echo "$TEST_PUBLIC_PEM" > test_public.pem
+          - command: npm ci
+          - command: npm run test:unit
+
+    scenario-tests:
+      environment:
+        variables:
+          DB_CONNECTION_STRING: mongodb://localhost:27017/auth_test
+          REFRESH_TOKEN_KEY: "$TEST_REFRESH_TOKEN_KEY"
+          ACCESS_TOKEN_PRIVATE_KEY_PATH: ./test_private.pem
+          ACCESS_TOKEN_PUBLIC_KEY_PATH: ./test_public.pem
+          ACCESS_TOKEN_LIFE: 2h
+          REFRESH_TOKEN_LIFE: 2d
+        services:
+          mongodb:
+            version: 7
+      tests:
+        override:
+          - command: echo "$TEST_PRIVATE_PEM" > test_private.pem
+          - command: echo "$TEST_PUBLIC_PEM" > test_public.pem
+          - command: npm ci
+          - command: npm run test:scen
+
+tools:
+  eslint:
+    enabled: true
+    config:
+      use_project_config: true
+
+  javascript:
+    enabled: true
+    code_rating: true
+    tests:
+      enabled: true
