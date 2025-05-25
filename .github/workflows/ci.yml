@@ -69,3 +69,30 @@ jobs:
       - run: npm ci
       - run: npm run test:scen
 
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [lint, test-unit, test-scen]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start ssh-agent and add private key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add droplet to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.PRODUCTION_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Set remote Docker host (via SSH)
+        run: echo "DOCKER_HOST=ssh://root@${{ secrets.PRODUCTION_HOST }}" >> $GITHUB_ENV
+
+      - name: Deploy auth-server via Docker Compose
+        run: |
+          docker compose -f docker-compose.digi.yml up -d --build
