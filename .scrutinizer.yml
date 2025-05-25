@@ -19,7 +19,7 @@ build:
         override:
           - command: node -v
           - command: npm -v
-          - command: npm config set engine-strict false  # 👈 IGNORE version mismatch
+          - command: npm config set engine-strict false
           - command: npm ci
           - command: npm run lint
 
