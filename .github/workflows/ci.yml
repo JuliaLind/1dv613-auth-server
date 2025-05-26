@@ -53,8 +53,8 @@ jobs:
       REFRESH_TOKEN_KEY: ${{ secrets.TEST_REFRESH_TOKEN_KEY }}
       ACCESS_TOKEN_PRIVATE_KEY_PATH: ./test_private.pem
       ACCESS_TOKEN_PUBLIC_KEY_PATH: ./test_public.pem
-      ACCESS_TOKEN_LIFE: 2h
-      REFRESH_TOKEN_LIFE: 2d
+      # ACCESS_TOKEN_LIFE: 2h
+      # REFRESH_TOKEN_LIFE: 2d
     steps:
       - uses: actions/checkout@v4
 
@@ -77,11 +77,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test-unit, test-scen]
     if: github.ref == 'refs/heads/main'
-    env:
-      NODE_ENV: production
-      ACCESS_TOKEN_PRIVATE_KEY_PATH: ./private.pem
-      ACCESS_TOKEN_PUBLIC_KEY_PATH: ./public.pem
-      DB_CONNECTION_STRING: mongodb://localhost:27017/auth
+    # env:
+    #   NODE_ENV: production
+    #   ACCESS_TOKEN_PRIVATE_KEY_PATH: ./private.pem
+    #   ACCESS_TOKEN_PUBLIC_KEY_PATH: ./public.pem
+    #   DB_CONNECTION_STRING: mongodb://localhost:27017/auth
 
     steps:
       - name: Checkout code
