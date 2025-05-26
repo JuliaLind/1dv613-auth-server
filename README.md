@@ -1,8 +1,15 @@
 # Auth Server API
 
-![Class diagram](.readme/class_diagram.drawio.png)
+This repo is part of https://github.com/JuliaLind/slimdreams .
+
+The application is deployed on https://julia-lnu.duckdns.org/auth/api/v1/ .
+
 
 ## General info
+
+![Class diagram](.readme/class_diagram.drawio.png)
+
+## Endpoints
 
 This document describes the available routes on the authentication server. All endpoints are versioned under `/api/v1/`.
 
