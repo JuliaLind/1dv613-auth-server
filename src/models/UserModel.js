@@ -93,6 +93,7 @@ const schema = new mongoose.Schema(
 schema.pre('save', async function () {
   const saltRounds = 10
 
+  this.email = this.email.toLowerCase().trim()
   this.password = await bcrypt.hash(this.password, saltRounds)
 })
 
@@ -137,7 +138,7 @@ async function verify (user, password) {
 schema.statics.authenticate = async function (email, password) {
   checkMandatoryFields(email, password)
 
-  const user = await this.findOne({ email })
+  const user = await this.findOne({ email: email.toLowerCase().trim() })
 
   await verify(user, password)
 
