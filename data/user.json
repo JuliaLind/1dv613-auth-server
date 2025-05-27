@@ -1,14 +1,15 @@
-{
+[{
   "_id": {
-    "$oid": "6820f273ee555f6d7f8cee61"
+    "$oid": "6818735f68f2ce4ec08f8972"
   },
-  "password": "$2b$10$tWDi0RotcuoCe0gQHKDCF.Y7P/0aZPRzY04XwtKZdKFF4VCg1gl5u",
+  "password": "$2b$10$C8MT4X.Xihc2TL4c.ZJ/.uXykL5qrhJiw.T0YRo3IftNfQIPbK66W",
   "email": "julia@lnu.se",
   "birthDate": "1989-02-24",
   "createdAt": {
-    "$date": "2025-05-11T18:54:43.875Z"
+    "$date": "2025-05-05T08:14:23.555Z"
   },
   "updatedAt": {
-    "$date": "2025-05-11T18:54:43.875Z"
-  }
-}
+    "$date": "2025-05-05T08:14:23.555Z"
+  },
+  "__v": 0
+}]
