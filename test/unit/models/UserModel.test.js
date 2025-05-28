@@ -48,6 +48,16 @@ describe('UserModel', () => {
     })
   })
 
+  it('authenticate OK - the email check should be case insensitive', async () => {
+    sinon.stub(UserModel, 'findOne').withArgs({ email: user.email }).resolves(user)
+
+    const res = await UserModel.authenticate('JuLiA@lnu.com', user.password)
+    expect(res.toObject()).to.deep.equal({
+      id: user.id,
+      birthDate: user.birthDate
+    })
+  })
+
   it('authenticate Not Ok, missing password. Should throw error with status code 401.', async () => {
     sinon.stub(UserModel, 'findOne').resolves(user)
 
@@ -138,6 +148,19 @@ describe('UserModel', () => {
       expect(bcryptStub.firstCall.args[0]).to.equal(password)
       expect(bcryptStub.firstCall.args[1]).to.equal(expSaltRounds)
       expect(user.password).to.equal(passwordHash)
+    })
+
+    it('pre save hook should make email lower-case', async function () {
+      sinon.stub(UserModel.collection, 'insertOne').resolves({ insertedId: '123' })
+      const password = 'myPassword'
+
+      const user = await UserModel.create({
+        email: 'juLiA@email.com',
+        birthDate: '1989-02-24',
+        password
+      })
+
+      expect(user.email).to.equal('julia@email.com')
     })
   })
 
