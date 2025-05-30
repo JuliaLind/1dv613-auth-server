@@ -3,7 +3,7 @@
  *
  */
 
-import { differenceInYears } from 'date-fns'
+import { startOfDay, differenceInYears } from 'date-fns'
 
 /**
  * Calculates current age based on the birth date.
@@ -12,5 +12,5 @@ import { differenceInYears } from 'date-fns'
  * @returns {number} - the age in years
  */
 export function getAge (birthDate) {
-  return differenceInYears(new Date(), new Date(birthDate))
+  return differenceInYears(startOfDay(new Date()), new Date(birthDate))
 }
