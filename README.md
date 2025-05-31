@@ -7,6 +7,7 @@ The application is deployed on https://julia-lnu.duckdns.org/auth/api/v1/ .
 
 ## General info
 
+![Sequence diagram](.readme/token_reuse_sequence_diagram.png)
 ![Class diagram](.readme/class_diagram.drawio.png)
 
 ## Endpoints
