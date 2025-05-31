@@ -3,7 +3,7 @@
  *
  */
 
-import { startOfDay, differenceInYears, endOfDay } from 'date-fns'
+import { differenceInYears, subDays } from 'date-fns'
 
 /**
  * Calculates current age based on the birth date.
@@ -12,5 +12,8 @@ import { startOfDay, differenceInYears, endOfDay } from 'date-fns'
  * @returns {number} - the age in years
  */
 export function getAge (birthDate) {
-  return differenceInYears(endOfDay(new Date()), startOfDay(new Date(birthDate)))
+  // subtract one day to avoid issues with time zones and daylight saving time
+  const years = differenceInYears(new Date(), subDays(new Date(birthDate), 1))
+  console.log(`Age calculated from birth date ${birthDate}: ${years} years`)
+  return years
 }
