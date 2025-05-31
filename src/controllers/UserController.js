@@ -19,7 +19,7 @@ export class UserController {
    *
    * @param {TokenService} tokenService - The token service to use.
    */
-  constructor (tokenService = new TokenService()) {
+  constructor(tokenService = new TokenService()) {
     this.#tokenService = tokenService
   }
 
@@ -30,13 +30,16 @@ export class UserController {
    * @param {Error} error - the error from the database.
    * @returns {Error} - the error to send in the response.
    */
-  #createHttpError (error) {
+  #createHttpError(error) {
     if (error.code === 11000) {
       return createError(409, 'The email address is already registered')
     }
 
     if (error.errors) {
-      return createError(400, 'The request cannot or will not be processed due to something that is perceived to be a client error (for example validation error).')
+      const messages = Object.values(error.errors)
+        .map((subErr) => subErr.message)
+        .join('. ')
+      return createError(400, messages)
     }
 
     return createError(500)
@@ -49,7 +52,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async register (req, res, next) {
+  async register(req, res, next) {
     try {
       const {
         email,
@@ -78,7 +81,7 @@ export class UserController {
    * @param {object} req - Express request object.
    * @returns {string} - The extracted jwt token.
    */
-  #extractToken (req) {
+  #extractToken(req) {
     const authorization = req.headers.authorization?.split(' ')
 
     if (this.#validateHeader(authorization)) {
@@ -94,10 +97,10 @@ export class UserController {
    * @param {string[]} authorization - The authorization header split into an array.
    * @returns {boolean} - True if the header is valid, otherwise false.
    */
-  #validateHeader (authorization) {
+  #validateHeader(authorization) {
     return Array.isArray(authorization) &&
-    typeof authorization?.[0] === 'string' &&
-    authorization[0].toLowerCase() === 'bearer'
+      typeof authorization?.[0] === 'string' &&
+      authorization[0].toLowerCase() === 'bearer'
   }
 
   /**
@@ -108,7 +111,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async refresh (req, res, next) {
+  async refresh(req, res, next) {
     try {
       const oldRefreshToken = this.#extractToken(req)
       const tokens = await this.#tokenService.refresh(oldRefreshToken)
@@ -127,7 +130,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async login (req, res, next) {
+  async login(req, res, next) {
     const { email, password } = req.body
 
     try {
@@ -149,7 +152,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async delete (req, res, next) {
+  async delete(req, res, next) {
     const { email, password } = req.body
 
     try {
@@ -171,7 +174,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async logout (req, res, next) {
+  async logout(req, res, next) {
     try {
       const refreshToken = this.#extractToken(req)
       await this.#tokenService.expire(refreshToken)
