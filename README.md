@@ -56,7 +56,7 @@ All requests and responses use `application/json` unless stated otherwise.
 
 ```json
 {
-  "message": "Registration successful. Please log in."
+  "id": "theNewUserId943049032"
 }
 ```
 
@@ -66,7 +66,7 @@ All requests and responses use `application/json` unless stated otherwise.
 |------|--------------------------------------|
 | 201  | User registered successfully         |
 | 400  | Bad request |
-| 409  | The nickname or email is already registered |
+| 409  | The email is already registered |
 
 ---
 
