@@ -2,7 +2,7 @@
 
 This repo is part of https://github.com/JuliaLind/slimdreams .
 
-The application is deployed on https://julia-lnu.duckdns.org/auth/api/v1/ .
+The Rest API is deployed on https://julia-lnu.duckdns.org/auth/api/v1/ .
 
 
 ## General info

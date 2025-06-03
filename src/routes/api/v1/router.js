@@ -25,7 +25,8 @@ router.delete('/user', (req, res, next) => controller.delete(req, res, next))
 router.get('/',
   (req, res) => {
     res.status(200).json({
-      message: 'Welcome to the auth server API',
-      version: '1.0.0'
+      message: 'Welcome to the auth server API v1',
+      version: '1.0.0',
+      documentation: 'https://github.com/JuliaLind/1dv613-auth-server'
     })
   })
